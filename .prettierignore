@@ -6,4 +6,5 @@ package-lock.json
 docs
 *.md
 brag-output
+brag-output-*/
 videos
