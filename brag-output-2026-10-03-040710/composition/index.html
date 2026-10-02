@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a;
+        font-family: -apple-system, "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+      .clip { position: absolute; }
+      .mono { font-family: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+      #bg { left: 0; top: 0; width: 1920px; height: 1080px; background: #0a0a0a; }
+      #hero-glow {
+        left: 160px; top: 90px; width: 1600px; height: 900px; opacity: 0.2;
+        background: radial-gradient(ellipse at center, rgba(255,92,57,0.28) 0%, rgba(99,102,241,0.12) 45%, rgba(0,0,0,0) 70%);
+      }
+      /* hook */
+      #hk-kick {
+        left: 0; top: 300px; width: 1920px; text-align: center;
+        color: #c7ccd5; font-size: 28px; letter-spacing: 0.42em;
+      }
+      #hk-kick .spike { color: #ff8a6b; }
+      #hk-1 {
+        left: 0; top: 400px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 64px; font-weight: 600; letter-spacing: -0.02em;
+      }
+      #hk-2 {
+        left: 0; top: 510px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 120px; font-weight: 800; letter-spacing: -0.03em;
+      }
+      #hk-2 .zero { color: #FF5C39; }
+      /* timestamps + step captions */
+      .tstamp {
+        left: 120px; top: 88px; padding: 10px 24px; border-radius: 999px;
+        background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14);
+        color: #e5e5e5; font-size: 26px; letter-spacing: 0.18em; opacity: 0;
+      }
+      .tstamp .dot { color: #FF5C39; }
+      .stepcap {
+        left: 0; top: 88px; width: 1920px; text-align: center;
+        color: #c7ccd5; font-size: 26px; letter-spacing: 0.4em; opacity: 0;
+      }
+      .stepcap .spike { color: #ff8a6b; }
+      /* windows */
+      .win {
+        border-radius: 18px; border: 1px solid rgba(255,255,255,0.16);
+        box-shadow: 0 30px 120px rgba(0,0,0,0.6); opacity: 0;
+      }
+      #w-onboard { left: 460px; top: 190px; width: 1000px; height: 597px; }
+      #w-icp { left: 460px; top: 190px; width: 1000px; height: 597px; }
+      #w-pipe { left: 340px; top: 170px; width: 1240px; height: 741px; }
+      #w-lead { left: 340px; top: 170px; width: 1240px; height: 741px; }
+      #w-war { left: 340px; top: 170px; width: 1240px; height: 741px; }
+      #type-line {
+        left: 560px; top: 690px; width: 800px; color: #e5e5e5;
+        font-size: 34px; font-weight: 500; opacity: 0;
+        border-left: 4px solid #FF5C39; padding-left: 18px;
+      }
+      #type-line .caret { display: inline-block; width: 18px; height: 40px; background: #FF5C39; vertical-align: -6px; margin-left: 6px; }
+      /* cursor + pulses */
+      #cursor { left: 0; top: 0; width: 34px; height: 34px; opacity: 0; }
+      #cursor .cdot {
+        position: absolute; left: 4px; top: 4px; width: 18px; height: 18px; border-radius: 50%;
+        background: #FF5C39; border: 3px solid #fff;
+        box-shadow: 0 0 18px rgba(255,92,57,0.9);
+      }
+      .pulse {
+        left: 0; top: 0; width: 90px; height: 90px; border-radius: 50%;
+        border: 4px solid #FF5C39; opacity: 0;
+      }
+      #live-badge {
+        left: 340px; top: 116px; padding: 10px 22px; border-radius: 999px;
+        background: #FF5C39; color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 0.2em; opacity: 0;
+      }
+      #sent-chip {
+        left: 340px; top: 830px; padding: 14px 26px; border-radius: 12px;
+        background: rgba(20,20,20,0.94); border: 1px solid rgba(74,222,128,0.6);
+        color: #e5e5e5; font-size: 28px; font-weight: 600; opacity: 0;
+      }
+      #sent-chip .pos { color: #4ade80; }
+      #coach-tip {
+        left: 1280px; top: 640px; width: 470px; padding: 24px 28px;
+        background: rgba(20,20,20,0.94); border: 1px solid rgba(255,92,57,0.55); border-radius: 14px;
+        color: #e5e5e5; opacity: 0;
+      }
+      #coach-tip .k { color: #FF5C39; font-size: 22px; letter-spacing: 0.3em; margin-bottom: 10px; }
+      #coach-tip .t { font-size: 29px; font-weight: 600; line-height: 1.3; }
+      /* breadth minis */
+      .mini {
+        top: 360px; width: 430px; opacity: 0;
+      }
+      .mini img {
+        width: 430px; height: 257px; object-fit: cover; object-position: top;
+        border-radius: 14px; border: 1px solid rgba(255,255,255,0.16);
+        box-shadow: 0 20px 70px rgba(0,0,0,0.55); display: block;
+      }
+      .mini .mlab {
+        margin-top: 16px; text-align: center; color: #c7ccd5;
+        font-size: 23px; letter-spacing: 0.24em;
+      }
+      .mini .mlab .spike { color: #ff8a6b; }
+      #mini-1 { left: 80px; } #mini-2 { left: 520px; } #mini-3 { left: 960px; } #mini-4 { left: 1400px; }
+      #breadth-track {
+        left: 0; top: 200px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 46px; font-weight: 700; letter-spacing: -0.015em; opacity: 0;
+      }
+      /* outro */
+      #out-lock {
+        left: 0; top: 360px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 160px; font-weight: 800; letter-spacing: -0.035em;
+      }
+      #out-sub {
+        left: 0; top: 580px; width: 1920px; text-align: center;
+        color: #c7ccd5; font-size: 44px; font-weight: 500;
+      }
+      #out-url {
+        left: 520px; top: 700px; width: 880px; text-align: center;
+        color: #0a0a0a; background: #FF5C39; font-size: 38px; font-weight: 700;
+        padding: 20px 0; border-radius: 14px;
+      }
+      #fade { left: 0; top: 0; width: 1920px; height: 1080px; background: #000; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root" data-composition-id="main" data-start="0" data-duration="23"
+      data-width="1920" data-height="1080"
+    >
+      <div id="bg" class="clip" data-start="0" data-duration="23" data-track-index="0"></div>
+      <div id="hero-glow" class="clip" data-start="2.5" data-duration="20.5" data-track-index="0"></div>
+      <audio id="music" data-start="0" data-duration="23" data-track-index="10" data-volume="0.35" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+      <!-- S1 hook 0-2.5 -->
+      <div id="hk-kick" class="clip mono" data-start="0.1" data-duration="2.4" data-track-index="1"><span class="spike">✱</span> OPEN SOURCE AI SDR</div>
+      <div id="hk-1" class="clip" data-start="0.25" data-duration="2.25" data-track-index="2">SDR software costs $1,000/month.</div>
+      <div id="hk-2" class="clip" data-start="1.4" data-duration="1.1" data-track-index="3">Ours costs <span class="zero">$0.</span></div>
+      <audio id="sfx-impact-1" data-start="1.3" data-duration="1" data-track-index="11" data-volume="0.8" src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+
+      <!-- S2 setup 2.5-7 -->
+      <div id="ts-1" class="tstamp clip mono" data-start="2.5" data-duration="2.3" data-track-index="1"><span class="dot">●</span> 9:04 AM</div>
+      <div id="sc-1" class="stepcap clip mono" data-start="2.5" data-duration="2.3" data-track-index="2"><span class="spike">✱</span> STEP 1 — DESCRIBE YOUR MARKET</div>
+      <img id="w-onboard" class="win clip" data-start="2.5" data-duration="2.3" data-track-index="3" src="assets/img/opencloser-onboarding-ai-sdr-setup.webp" alt="" />
+      <div id="type-line" class="clip mono" data-start="2.7" data-duration="2.0" data-track-index="4"><span id="type-text">Commercial contractors, $5M–$20M ARR</span><span class="caret"></span></div>
+      <div id="ts-2" class="tstamp clip mono" data-start="4.8" data-duration="2.2" data-track-index="1"><span class="dot">●</span> 9:06 AM</div>
+      <div id="sc-2" class="stepcap clip mono" data-start="4.8" data-duration="2.2" data-track-index="2"><span class="spike">✱</span> STEP 2 — YOUR ICP, READY IN MINUTES</div>
+      <img id="w-icp" class="win clip" data-start="4.8" data-duration="2.2" data-track-index="3" src="assets/img/opencloser-icp-review.webp" alt="" />
+      <audio id="sfx-key-1" data-start="2.9" data-duration="0.3" data-track-index="12" data-volume="0.4" src="assets/sfx/keyboard/keypress-001.wav"></audio>
+      <audio id="sfx-key-2" data-start="3.2" data-duration="0.3" data-track-index="13" data-volume="0.4" src="assets/sfx/keyboard/keypress-007.wav"></audio>
+      <audio id="sfx-key-3" data-start="3.5" data-duration="0.3" data-track-index="14" data-volume="0.4" src="assets/sfx/keyboard/keypress-013.wav"></audio>
+      <audio id="sfx-key-4" data-start="3.8" data-duration="0.3" data-track-index="15" data-volume="0.4" src="assets/sfx/keyboard/keypress-021.wav"></audio>
+      <audio id="sfx-drop-1" data-start="4.9" data-duration="1" data-track-index="16" data-volume="0.65" src="assets/sfx/interface/drop_001.ogg"></audio>
+
+      <!-- S3 flow 7-16 -->
+      <div id="ts-3" class="tstamp clip mono" data-start="7.0" data-duration="5.4" data-track-index="1"><span class="dot">●</span> 10:15 AM</div>
+      <div id="sc-3" class="stepcap clip mono" data-start="7.0" data-duration="5.4" data-track-index="2"><span class="spike">✱</span> STEP 3 — LEADS, SCORED BY AI</div>
+      <img id="w-pipe" class="win clip" data-start="7.0" data-duration="2.3" data-track-index="3" src="assets/img/opencloser-pipeline-kanban.webp" alt="" />
+      <img id="w-lead" class="win clip" data-start="9.3" data-duration="3.1" data-track-index="3" src="assets/img/opencloser-lead-detail.webp" alt="" />
+      <div id="sc-3b" class="stepcap clip mono" data-start="9.4" data-duration="3.0" data-track-index="2"><span class="spike">✱</span> SCORE 95 — CLICK INITIATE</div>
+      <img id="w-war" class="win clip" data-start="12.5" data-duration="3.5" data-track-index="3" src="assets/img/opencloser-war-room-ai-cold-calling.webp" alt="" />
+      <div id="ts-4" class="tstamp clip mono" data-start="12.5" data-duration="3.5" data-track-index="1"><span class="dot">●</span> 11:30 AM</div>
+      <div id="sc-4" class="stepcap clip mono" data-start="12.5" data-duration="3.5" data-track-index="2"><span class="spike">✱</span> YOUR AI MAKES THE CALL</div>
+      <div id="cursor" class="clip" data-start="7.3" data-duration="4.4" data-track-index="4"><div class="cdot"></div></div>
+      <div id="pulse-1" class="pulse clip" data-start="8.5" data-duration="0.5" data-track-index="5"></div>
+      <div id="pulse-2" class="pulse clip" data-start="11.7" data-duration="0.5" data-track-index="5"></div>
+      <div id="live-badge" class="clip mono" data-start="12.6" data-duration="3.4" data-track-index="4">● LIVE CALL</div>
+      <div id="sent-chip" class="clip" data-start="13.2" data-duration="2.8" data-track-index="4">Prospect sentiment: <span class="pos">Positive 82%</span></div>
+      <div id="coach-tip" class="clip" data-start="13.5" data-duration="2.5" data-track-index="4">
+        <div class="k mono">✱ LIVE COACHING</div>
+        <div class="t">SPIN situation tip: ask about their current process.</div>
+      </div>
+      <audio id="sfx-click-1" data-start="8.5" data-duration="0.5" data-track-index="17" data-volume="0.8" src="assets/sfx/ui/mouseclick1.ogg"></audio>
+      <audio id="sfx-click-2" data-start="11.7" data-duration="0.5" data-track-index="18" data-volume="0.8" src="assets/sfx/ui/mouseclick1.ogg"></audio>
+      <audio id="sfx-drop-2" data-start="13.5" data-duration="1" data-track-index="19" data-volume="0.6" src="assets/sfx/interface/drop_001.ogg"></audio>
+
+      <!-- S4 breadth 16-20 -->
+      <div id="breadth-track" class="clip" data-start="16.0" data-duration="4.0" data-track-index="1">While it dials, meet the rest of the team.</div>
+      <div id="mini-1" class="mini clip" data-start="16.1" data-duration="3.9" data-track-index="2"><img src="assets/img/opencloser-ai-persona-builder.webp" alt="" /><div class="mlab mono"><span class="spike">✱</span> DESIGN THE VOICE</div></div>
+      <div id="mini-2" class="mini clip" data-start="16.65" data-duration="3.35" data-track-index="3"><img src="assets/img/opencloser-call-intelligence.webp" alt="" /><div class="mlab mono"><span class="spike">✱</span> EVERY CALL ANALYZED</div></div>
+      <div id="mini-3" class="mini clip" data-start="17.2" data-duration="2.8" data-track-index="4"><img src="assets/img/opencloser-lead-hunter.webp" alt="" /><div class="mlab mono"><span class="spike">✱</span> PROSPECTS ON TAP</div></div>
+      <div id="mini-4" class="mini clip" data-start="17.75" data-duration="2.25" data-track-index="5"><img src="assets/img/opencloser-settings.webp" alt="" /><div class="mlab mono"><span class="spike">✱</span> KEYS STAY LOCAL</div></div>
+      <audio id="sfx-card-1" data-start="16.1" data-duration="0.6" data-track-index="20" data-volume="0.7" src="assets/sfx/casino/card-place-1.ogg"></audio>
+      <audio id="sfx-card-2" data-start="16.65" data-duration="0.6" data-track-index="21" data-volume="0.7" src="assets/sfx/casino/card-place-2.ogg"></audio>
+      <audio id="sfx-card-3" data-start="17.2" data-duration="0.6" data-track-index="22" data-volume="0.7" src="assets/sfx/casino/card-place-3.ogg"></audio>
+      <audio id="sfx-card-4" data-start="17.75" data-duration="0.6" data-track-index="23" data-volume="0.75" src="assets/sfx/casino/card-place-4.ogg"></audio>
+
+      <!-- S5 outro 20-23 -->
+      <div id="out-lock" class="clip" data-start="20.3" data-duration="2.7" data-track-index="1">OpenCloser.</div>
+      <div id="out-sub" class="clip" data-start="20.8" data-duration="2.2" data-track-index="2">Download free.</div>
+      <div id="out-url" class="clip mono" data-start="21.1" data-duration="1.9" data-track-index="3">github.com/issacops/opencloser-v2</div>
+      <audio id="sfx-bell-2" data-start="20.3" data-duration="2.4" data-track-index="24" data-volume="0.8" src="assets/sfx/impact/impactBell_heavy_004.ogg"></audio>
+      <div id="fade" class="clip" data-start="22.6" data-duration="0.4" data-track-index="9"></div>
+    </div>
+    <script>
+      // RMS curve (per-0.5s mean, 0-23s) baked from the music bed — deterministic.
+      var RMS46 = [0.253,0.173,0.146,0.24,0.2,0.178,0.218,0.207,0.226,0.222,0.162,0.172,0.199,0.218,0.212,0.163,0.228,0.325,0.338,0.347,0.36,0.375,0.336,0.331,0.362,0.355,0.367,0.329,0.347,0.345,0.412,0.359,0.41,0.381,0.329,0.327,0.299,0.389,0.449,0.451,0.339,0.457,0.482,0.501,0.337,0.284];
+      var glow = document.getElementById("hero-glow");
+      var music = document.getElementById("music");
+      var tl = gsap.timeline({ paused: true });
+      tl.eventCallback("onUpdate", function () {
+        var t = tl.time();
+        var idx = Math.min(45, Math.max(0, Math.floor(t * 2)));
+        glow.style.opacity = (0.12 + 0.55 * RMS46[idx]).toFixed(3);
+      });
+      // S1 hook
+      tl.fromTo("#hk-kick", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.1);
+      tl.fromTo("#hk-1", { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 0.25);
+      tl.fromTo("#hk-2", { opacity: 0, scale: 1.18 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 1.4);
+      tl.to("#hk-kick, #hk-1, #hk-2", { opacity: 0, duration: 0.2, ease: "power2.in" }, 2.3);
+      // S2 setup
+      tl.fromTo("#ts-1, #sc-1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.5);
+      tl.fromTo("#w-onboard", { opacity: 0, y: 40, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, 2.5);
+      tl.fromTo("#type-line", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 2.7);
+      tl.fromTo("#type-text", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.5, ease: "steps(30)" }, 2.7);
+      tl.to("#ts-1, #sc-1, #w-onboard, #type-line", { opacity: 0, duration: 0.2, ease: "power2.in" }, 4.6);
+      tl.fromTo("#ts-2, #sc-2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 4.8);
+      tl.fromTo("#w-icp", { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 4.8);
+      tl.to("#ts-2, #sc-2, #w-icp", { opacity: 0, duration: 0.25, ease: "power2.in" }, 6.75);
+      // S3 flow
+      tl.fromTo("#ts-3, #sc-3", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 7.0);
+      tl.fromTo("#w-pipe", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 7.0);
+      tl.fromTo("#cursor", { opacity: 0, x: 420, y: 720 }, { opacity: 1, x: 620, y: 480, duration: 0.7, ease: "power2.inOut" }, 7.3);
+      tl.fromTo("#pulse-1", { opacity: 0.9, scale: 0.3, x: 575, y: 435 }, { opacity: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 8.5);
+      tl.to("#w-pipe", { opacity: 0, duration: 0.15 }, 9.2);
+      tl.to("#sc-3", { opacity: 0, duration: 0.15 }, 9.2);
+      tl.fromTo("#w-lead", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 9.3);
+      tl.fromTo("#sc-3b", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 9.4);
+      tl.to("#cursor", { x: 1380, y: 455, duration: 0.7, ease: "power2.inOut" }, 10.6);
+      tl.fromTo("#pulse-2", { opacity: 0.9, scale: 0.3, x: 1335, y: 410 }, { opacity: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 11.7);
+      // beat-locked: War Room reveal 12.5s (strong cue 12.55s)
+      tl.to("#w-lead, #sc-3b, #ts-3, #sc-3", { opacity: 0, duration: 0.12 }, 12.4);
+      tl.fromTo("#w-war", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 12.5);
+      tl.fromTo("#ts-4, #sc-4", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 12.5);
+      tl.fromTo("#live-badge", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 12.6);
+      tl.to("#cursor", { opacity: 0, duration: 0.3 }, 12.7);
+      tl.fromTo("#sent-chip", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 13.2);
+      tl.fromTo("#coach-tip", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 13.5);
+      tl.to("#ts-4, #sc-4, #w-war, #live-badge, #sent-chip, #coach-tip", { opacity: 0, duration: 0.3, ease: "power2.in" }, 15.7);
+      // S4 breadth (mini-3 beat-locked near 17.47s strong cue)
+      tl.fromTo("#breadth-track", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 16.0);
+      tl.fromTo("#mini-1", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 16.1);
+      tl.fromTo("#mini-2", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 16.65);
+      tl.fromTo("#mini-3", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 17.2);
+      tl.fromTo("#mini-4", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 17.75);
+      tl.to("#breadth-track, #mini-1, #mini-2, #mini-3, #mini-4", { opacity: 0, duration: 0.25, ease: "power2.in" }, 19.75);
+      // S5 outro (accent beat-locked to 22.37s strong cue)
+      tl.fromTo("#out-lock", { opacity: 0, scale: 1.15 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 20.3);
+      tl.fromTo("#out-sub", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 20.8);
+      tl.fromTo("#out-url", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 21.1);
+      tl.fromTo("#out-lock", { scale: 1 }, { scale: 1.025, duration: 0.3, ease: "power2.out" }, 22.37);
+      tl.fromTo("#fade", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, 22.6);
+      // Music fade-out over the last 1.5s
+      tl.to(music, { volume: 0, duration: 1.5, ease: "power1.in" }, 21.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

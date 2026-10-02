@@ -22,6 +22,16 @@
 
 ---
 
+## 🎬 Watch the Launch Video
+
+<div align="center">
+
+[![OpenCloser launch video — SDR software costs $1,000/month. Ours costs $0.](https://issacops.github.io/opencloser-v2/opencloser-launch-poster.jpg)](https://issacops.github.io/opencloser-v2/opencloser-launch.mp4)
+
+*23 seconds: one seller\u2019s first morning — market → ICP → scored leads → live AI call. Click to play.*
+
+</div>
+
 ## 📸 Screenshots
 
 <div align="center">

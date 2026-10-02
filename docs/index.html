@@ -8,6 +8,7 @@
   <meta name="keywords" content="open source AI SDR, AI sales platform, AI cold calling software, self-hosted AI sales agent, sales automation, AI voice caller, desktop CRM, lead generation, open source CRM">
   <meta name="author" content="OpenCloser">
   <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://issacops.github.io/opencloser-v2/">
 
   <!-- Open Graph -->
@@ -20,12 +21,19 @@
   <meta property="og:image:width" content="1440">
   <meta property="og:image:height" content="860">
   <meta property="og:image:alt" content="OpenCloser War Room — Live AI cold call with sentiment analysis and live coaching">
+  <meta property="og:video" content="https://issacops.github.io/opencloser-v2/opencloser-launch.mp4">
+  <meta property="og:video:type" content="video/mp4">
+  <meta property="og:video:width" content="1920">
+  <meta property="og:video:height" content="1080">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="player">
   <meta name="twitter:title" content="OpenCloser — Open Source AI SDR">
   <meta name="twitter:description" content="AI cold calling software, lead generation, sales automation — all running locally. Free & open source.">
-  <meta name="twitter:image" content="https://issacops.github.io/opencloser-v2/screenshots/opencloser-war-room-ai-cold-calling.webp">
+  <meta name="twitter:image" content="https://issacops.github.io/opencloser-v2/opencloser-launch-poster.jpg">
+  <meta name="twitter:player" content="https://issacops.github.io/opencloser-v2/opencloser-launch.mp4">
+  <meta name="twitter:player:width" content="1920">
+  <meta name="twitter:player:height" content="1080">
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
@@ -38,11 +46,7 @@
     "name": "OpenCloser",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "macOS, Windows, Linux",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "description": "Open source AI SDR and AI sales platform. AI cold calling software with lead generation, sales automation, voice caller, sales coach, and analytics — all running locally on your desktop.",
     "url": "https://issacops.github.io/opencloser-v2/",
     "downloadUrl": "https://github.com/issacops/opencloser-v2/releases",
@@ -56,6 +60,21 @@
   }
   </script>
 
+  <!-- Structured Data: VideoObject -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "OpenCloser — Open Source AI SDR (Launch Video)",
+    "description": "23-second launch trailer: one seller\u2019s first morning — market description to live AI cold call by 11:30 AM, with sentiment analysis and coaching.",
+    "thumbnailUrl": "https://issacops.github.io/opencloser-v2/opencloser-launch-poster.jpg",
+    "contentUrl": "https://issacops.github.io/opencloser-v2/opencloser-launch.mp4",
+    "embedUrl": "https://issacops.github.io/opencloser-v2/",
+    "uploadDate": "2026-10-02",
+    "duration": "PT23S"
+  }
+  </script>
+
   <!-- Structured Data: FAQPage -->
   <script type="application/ld+json">
   {
@@ -65,163 +84,358 @@
       {
         "@type": "Question",
         "name": "Is OpenCloser really free and open source?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. OpenCloser is MIT licensed and completely free. There are no SaaS fees, no per-seat pricing, and no cloud subscription. You own the entire stack."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. OpenCloser is MIT licensed and completely free. No SaaS fees, no per-seat pricing, no cloud subscription. You own the entire stack." }
       },
       {
         "@type": "Question",
         "name": "Does OpenCloser work without an API key?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. OpenCloser runs fully in demo mode with no API key — 10 realistic seed leads, simulated AI calls, and all features functioning with fallback data. Add a Gemini, OpenAI, or ElevenLabs key when you're ready for real AI."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. OpenCloser runs fully in demo mode with no API key — 10 realistic seed leads, simulated AI calls, and all features functioning with fallback data." }
       },
       {
         "@type": "Question",
         "name": "Is my data sent to the cloud?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. All data stays in a local SQLite database on your machine. API keys are stored in your browser's localStorage and sent only to the AI provider you configure — as headers, never in URLs. With Ollama configured, everything runs fully offline."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "No. All data stays in a local SQLite database. API keys are stored in localStorage and sent only to your chosen AI provider as headers, never in URLs. With Ollama, everything runs fully offline." }
       },
       {
         "@type": "Question",
         "name": "What platforms does OpenCloser support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "OpenCloser is a Tauri 2.0 desktop app supporting macOS (Apple Silicon and Intel), Windows (x86_64), and Linux (x86_64). Downloads are available as .dmg, .msi/.exe, and .deb/.AppImage/.rpm."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "macOS (Apple Silicon and Intel), Windows (x86_64), and Linux (x86_64) via .dmg, .msi/.exe, and .deb/.AppImage/.rpm." }
       },
       {
         "@type": "Question",
         "name": "How does the AI cold calling work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "OpenCloser's War Room connects to Twilio phone lines (or runs in mock mode). The AI voice caller dials prospects, speaks in real-time using Gemini/OpenAI/ElevenLabs, detects sentiment and objections, and provides live coaching. A bundled cloudflared tunnel handles the audio stream."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "The War Room connects to Twilio phone lines (or mock mode). The AI voice caller dials prospects in real time with sentiment analysis, objection detection, and live coaching, over a bundled cloudflared tunnel." }
       }
     ]
   }
   </script>
 
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "OpenCloser",
+    "url": "https://issacops.github.io/opencloser-v2/",
+    "logo": "https://issacops.github.io/opencloser-v2/opencloser-launch-poster.jpg",
+    "sameAs": ["https://github.com/issacops/opencloser-v2"]
+  }
+  </script>
+
   <style>
+    :root {
+      --bg: #0a0a0a; --panel: #111113; --panel2: #16161a;
+      --ink: #e5e5e5; --muted: #9ca3af; --faint: #6b7280;
+      --accent: #FF5C39; --indigo: #6366f1;
+      --line: rgba(255,255,255,0.08); --radius: 16px;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e5e5e5; min-height: 100vh; }
-    .hero { text-align: center; padding: 80px 24px 40px; max-width: 900px; margin: 0 auto; }
-    h1 { font-size: 56px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.03em; background: linear-gradient(135deg, #6366f1, #FF5C39); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .tagline { font-size: 22px; color: #9ca3af; margin-bottom: 32px; line-height: 1.5; }
-    .badges { margin-bottom: 40px; }
-    .badges span { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; margin: 4px; font-size: 14px; color: #d4d4d4; }
-    .cta { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; }
-    .btn { padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
-    .btn-primary { background: #6366f1; color: #fff; }
-    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
-    .btn-secondary { background: rgba(255,255,255,0.08); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.12); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.14); }
-    .features { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; max-width: 800px; margin: 0 auto 60px; }
-    .feature { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; width: 150px; text-align: center; }
-    .feature .icon { font-size: 28px; margin-bottom: 8px; }
-    .feature .label { font-size: 13px; color: #9ca3af; }
-    .screenshots { max-width: 1200px; margin: 0 auto 60px; padding: 0 24px; }
-    .screenshots h2 { text-align: center; font-size: 32px; margin-bottom: 32px; color: #e5e5e5; }
-    .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
-    .screenshot-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; }
-    .screenshot-card img { width: 100%; display: block; }
-    .screenshot-card .caption { padding: 12px 16px; font-size: 14px; color: #9ca3af; text-align: center; }
-    .comparison { max-width: 800px; margin: 0 auto 60px; padding: 0 24px; }
-    .comparison h2 { text-align: center; font-size: 32px; margin-bottom: 24px; }
-    .comparison table { width: 100%; border-collapse: collapse; font-size: 15px; }
-    .comparison th, .comparison td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .comparison th { color: #9ca3af; font-weight: 600; }
-    .comparison td:last-child { color: #4ade80; font-weight: 600; }
-    footer { text-align: center; padding: 40px 24px; color: #6b7280; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
-    footer a { color: #6366f1; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+    a { color: inherit; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+    /* nav */
+    nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); background: rgba(10,10,10,0.82); border-bottom: 1px solid var(--line); }
+    nav .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
+    .brand { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; text-decoration: none; }
+    .brand b { background: linear-gradient(135deg, var(--indigo), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    nav .links { display: flex; gap: 22px; margin-left: 12px; font-size: 14px; color: var(--muted); }
+    nav .links a { text-decoration: none; }
+    nav .links a:hover { color: var(--ink); }
+    nav .spacer { flex: 1; }
+    .btn { display: inline-block; padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 650; text-decoration: none; transition: transform .15s, background .15s; border: 1px solid transparent; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--indigo); color: #fff; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: #e04a2b; }
+    .btn-ghost { background: rgba(255,255,255,0.07); color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.13); }
+    .btn-sm { padding: 8px 18px; font-size: 14px; border-radius: 10px; }
+
+    /* hero */
+    .hero { text-align: center; padding: 88px 0 56px; position: relative; overflow: hidden; }
+    .hero::before { content: ""; position: absolute; inset: -20% -10% auto; height: 640px; background: radial-gradient(ellipse 60% 55% at 50% 0%, rgba(99,102,241,0.22), rgba(255,92,57,0.08) 55%, transparent 75%); pointer-events: none; }
+    .kicker { display: inline-block; font-size: 13px; letter-spacing: 0.28em; color: var(--accent); font-weight: 700; margin-bottom: 18px; }
+    h1 { font-size: clamp(40px, 6.4vw, 72px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; margin-bottom: 20px; }
+    h1 .grad { background: linear-gradient(135deg, var(--indigo), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .tagline { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); max-width: 720px; margin: 0 auto 34px; }
+    .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 26px; }
+    .proof { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; color: var(--faint); font-size: 14px; }
+    .proof img { height: 20px; }
+    .hero-shot { margin: 54px auto 0; max-width: 980px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 90px rgba(255,92,57,0.10); }
+    .hero-shot img { width: 100%; display: block; }
+    .hero-cap { margin-top: 12px; font-size: 13px; color: var(--faint); }
+
+    /* sections */
+    section { padding: 72px 0; }
+    section.alt { background: linear-gradient(180deg, transparent, rgba(255,255,255,0.015) 20%, rgba(255,255,255,0.015) 80%, transparent); }
+    h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -0.025em; text-align: center; margin-bottom: 12px; }
+    .sub { text-align: center; color: var(--muted); max-width: 640px; margin: 0 auto 44px; font-size: 17px; }
+
+    /* stack strip */
+    .stack { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: -8px; }
+    .stack span { font-size: 13px; color: var(--muted); background: rgba(255,255,255,0.05); border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px; }
+
+    /* features */
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .feat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: transform .18s, border-color .18s; }
+    .feat:hover { transform: translateY(-3px); border-color: rgba(255,92,57,0.35); }
+    .feat img { width: 100%; display: block; aspect-ratio: 16/9.55; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); }
+    .feat .body { padding: 22px 24px 26px; }
+    .feat .icon { font-size: 26px; }
+    .feat h3 { font-size: 19px; margin: 8px 0 8px; letter-spacing: -0.01em; }
+    .feat p { font-size: 14.5px; color: var(--muted); }
+
+    /* steps */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; counter-reset: step; }
+    .step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; position: relative; }
+    .step::before { counter-increment: step; content: "0" counter(step); display: block; font-size: 13px; letter-spacing: 0.3em; color: var(--accent); font-weight: 800; margin-bottom: 12px; }
+    .step h3 { font-size: 19px; margin-bottom: 8px; }
+    .step p { font-size: 14.5px; color: var(--muted); }
+    .step img { width: 100%; border-radius: 10px; margin-top: 16px; border: 1px solid var(--line); }
+
+    /* video + screenshots */
+    .video-frame { max-width: 960px; margin: 0 auto; }
+    .video-frame video { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); display: block; box-shadow: 0 30px 90px rgba(0,0,0,0.5); }
+    .shot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .shot { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .shot img { width: 100%; display: block; aspect-ratio: 16/9.55; object-fit: cover; object-position: top; }
+    .shot .cap { padding: 12px 18px; font-size: 14px; color: var(--muted); text-align: center; }
+
+    /* compare */
+    .cmp { max-width: 820px; margin: 0 auto; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    th, td { padding: 13px 18px; text-align: left; border-bottom: 1px solid var(--line); }
+    tr:last-child th, tr:last-child td { border-bottom: none; }
+    th { color: var(--muted); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+    td:last-child, th:last-child { color: #4ade80; font-weight: 650; }
+    td:nth-child(2) { color: var(--faint); }
+
+    /* faq */
+    .faq { max-width: 760px; margin: 0 auto; display: grid; gap: 12px; }
+    details { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; }
+    summary { cursor: pointer; font-weight: 650; font-size: 16px; }
+    summary:hover { color: #fff; }
+    details p { margin-top: 10px; font-size: 14.5px; color: var(--muted); }
+
+    /* download */
+    .dl { text-align: center; }
+    .dl-grid { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 30px 0 18px; }
+    .dl-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 30px; min-width: 200px; text-decoration: none; transition: transform .15s, border-color .15s; }
+    .dl-card:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.5); }
+    .dl-card .os { font-size: 30px; }
+    .dl-card h3 { margin: 8px 0 2px; font-size: 17px; }
+    .dl-card small { color: var(--faint); font-size: 12.5px; }
+    .dl-note { color: var(--faint); font-size: 13.5px; }
+
+    footer { border-top: 1px solid var(--line); padding: 44px 0 54px; color: var(--faint); font-size: 14px; }
+    footer .wrap { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (max-width: 720px) { nav .links { display: none; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .reveal { opacity: 1; transform: none; } }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>OpenCloser</h1>
-    <p class="tagline">The open source AI SDR platform. Your entire AI sales team — strategist, lead researcher, voice caller, coach, and manager — running locally on your desktop. No SaaS fees. No cloud dependency.</p>
-    <div class="badges">
-      <span>🧠 AI Strategist</span>
-      <span>🔍 Lead Researcher</span>
-      <span>📞 AI Voice Caller</span>
-      <span>🎯 Sales Coach</span>
-      <span>📊 Sales Manager</span>
-      <span>🔒 100% Local</span>
-      <span>🆓 Free & Open Source</span>
-      <span>🐍 Python-free</span>
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="#top">📞 <b>OpenCloser</b></a>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#video">Video</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#faq">FAQ</a>
+        <a href="#download">Download</a>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/issacops/opencloser-v2">⭐ Star on GitHub</a>
     </div>
-    <div class="cta">
-      <a href="https://github.com/issacops/opencloser-v2" class="btn btn-primary">⭐ View on GitHub</a>
-      <a href="https://github.com/issacops/opencloser-v2/releases" class="btn btn-secondary">📦 Download</a>
-    </div>
-    <div class="features">
-      <div class="feature"><div class="icon">🖥️</div><div class="label">macOS</div></div>
-      <div class="feature"><div class="icon">🪟</div><div class="label">Windows</div></div>
-      <div class="feature"><div class="icon">🐧</div><div class="label">Linux</div></div>
-      <div class="feature"><div class="icon">🔒</div><div class="label">Offline-first</div></div>
-      <div class="feature"><div class="icon">🤖</div><div class="label">Gemini AI</div></div>
-      <div class="feature"><div class="icon">📞</div><div class="label">Twilio Ready</div></div>
-    </div>
-  </div>
+  </nav>
 
-  <div class="screenshots">
-    <h2>Watch the Launch Video</h2>
-    <div style="max-width: 960px; margin: 0 auto 48px;">
-      <video controls preload="metadata" poster="opencloser-launch-poster.jpg" style="width: 100%; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
-        <source src="opencloser-launch.mp4" type="video/mp4">
-      </video>
-    </div>
-    <h2>See It In Action</h2>
-    <div class="screenshot-grid">
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-war-room-ai-cold-calling.webp" alt="OpenCloser War Room — Live AI cold call with sentiment analysis and live coaching" loading="lazy">
-        <div class="caption">War Room — Live AI Cold Calling</div>
+  <header class="hero" id="top">
+    <div class="wrap">
+      <span class="kicker">✱ OPEN SOURCE AI SDR</span>
+      <h1>Your entire AI sales team.<br><span class="grad">On your desktop. Free.</span></h1>
+      <p class="tagline">OpenCloser is the open source AI sales platform — strategist, lead researcher, voice caller, coach, and manager in one desktop app. AI cold calling, lead generation, and sales automation with zero SaaS fees and zero cloud dependency.</p>
+      <div class="cta">
+        <a class="btn btn-accent" href="#download">📦 Download Free</a>
+        <a class="btn btn-ghost" href="https://github.com/issacops/opencloser-v2">View on GitHub</a>
       </div>
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-dashboard-home.webp" alt="OpenCloser Dashboard — KPI analytics and pipeline overview" loading="lazy">
-        <div class="caption">Dashboard — Sales Analytics</div>
+      <div class="proof">
+        <a href="https://github.com/issacops/opencloser-v2/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/issacops/opencloser-v2?style=social"></a>
+        <a href="https://github.com/issacops/opencloser-v2/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/issacops/opencloser-v2?style=social"></a>
+        <a href="https://github.com/issacops/opencloser-v2/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/issacops/opencloser-v2?style=flat-square"></a>
+        <a href="https://github.com/issacops/opencloser-v2/blob/main/LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green?style=flat-square"></a>
+        <span>· v0.2.0 · macOS · Windows · Linux</span>
       </div>
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-pipeline-kanban.webp" alt="OpenCloser Pipeline — Kanban CRM with AI execution tracking" loading="lazy">
-        <div class="caption">Pipeline — Kanban CRM</div>
-      </div>
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-ai-persona-builder.webp" alt="OpenCloser AI Persona Builder — Voice engine architect with emotion matrix" loading="lazy">
-        <div class="caption">AI Persona Builder</div>
-      </div>
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-lead-hunter.webp" alt="OpenCloser Lead Hunter — AI lead generation with ICP targeting" loading="lazy">
-        <div class="caption">Lead Hunter — AI Prospecting</div>
-      </div>
-      <div class="screenshot-card">
-        <img src="screenshots/opencloser-call-intelligence.webp" alt="OpenCloser Call Intelligence — Call analytics and outcome tracking" loading="lazy">
-        <div class="caption">Call Intelligence</div>
+      <figure class="hero-shot reveal">
+        <img src="screenshots/opencloser-war-room-ai-cold-calling.webp" alt="OpenCloser War Room — live AI cold call with real-time sentiment analysis, objection detection, and live sales coaching" fetchpriority="high">
+      </figure>
+      <figcaption class="hero-cap">The War Room — a live AI cold call with sentiment tracking and coaching</figcaption>
+      <div class="stack" style="margin-top: 34px;">
+        <span>Tauri 2.0</span><span>React 19</span><span>Rust</span><span>SQLite</span><span>Gemini 2.5</span><span>OpenAI Realtime</span><span>ElevenLabs</span><span>Ollama (offline)</span><span>Twilio</span>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="comparison">
-    <h2>OpenCloser vs. Traditional SDR Platforms</h2>
-    <table>
-      <tr><th>Feature</th><th>Traditional SaaS</th><th>OpenCloser</th></tr>
-      <tr><td>Cost</td><td>$280–$1,000+/mo</td><td>Free</td></tr>
-      <tr><td>Data Privacy</td><td>Cloud-hosted</td><td>100% Local</td></tr>
-      <tr><td>AI Cold Calling</td><td>Limited / Add-on</td><td>Built-in</td></tr>
-      <tr><td>Lead Generation</td><td>Manual / Extra</td><td>AI-Powered</td></tr>
-      <tr><td>Sales Coach</td><td>Not included</td><td>AI Sparring Partner</td></tr>
-      <tr><td>Self-Hosted</td><td>No</td><td>Yes</td></tr>
-      <tr><td>Open Source</td><td>No</td><td>MIT License</td></tr>
-    </table>
-  </div>
+  <section id="features">
+    <div class="wrap">
+      <h2 class="reveal">Five agents. One app.</h2>
+      <p class="sub reveal">Every seat of a sales org, recreated as local-first AI — sharing one pipeline, one database, zero subscriptions.</p>
+      <div class="feat-grid">
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-icp-review.webp" alt="AI sales strategist generating an Ideal Customer Profile with SPIN and Challenger frameworks" loading="lazy">
+          <div class="body"><div class="icon">🧠</div><h3>AI Sales Strategist</h3><p>Interviews you about your market, then generates your Ideal Customer Profile using SPIN &amp; Challenger — in minutes, not consulting engagements.</p></div>
+        </article>
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-lead-hunter.webp" alt="AI lead researcher hunting and scoring prospects with ICP targeting filters" loading="lazy">
+          <div class="body"><div class="icon">🔍</div><h3>AI Lead Researcher</h3><p>Hunts prospects against your ICP, auto-scores every lead, and drops the qualified ones straight into your Kanban pipeline.</p></div>
+        </article>
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-war-room-ai-cold-calling.webp" alt="AI voice caller dialing prospects live from the War Room with sentiment analysis" loading="lazy">
+          <div class="body"><div class="icon">📞</div><h3>AI Voice Caller</h3><p>Dials real prospects over Twilio phone lines. Reads sentiment live, handles objections, never burns out. Mock mode included — no credentials needed to try it.</p></div>
+        </article>
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-sales-coach-trainer.webp" alt="AI sales coach running objection-handling sparring sessions at three difficulty levels" loading="lazy">
+          <div class="body"><div class="icon">🎯</div><h3>AI Sales Coach</h3><p>Spar against 12 objection archetypes at Rookie, Pro, or Elite difficulty. Instant scoring with specific rebuttal tips after every round.</p></div>
+        </article>
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-call-intelligence.webp" alt="AI sales manager dashboard with call analytics, conversion metrics, and outcome tracking" loading="lazy">
+          <div class="body"><div class="icon">📊</div><h3>AI Sales Manager</h3><p>Post-call debriefs with sentiment analysis, auto-written follow-ups, and conversion analytics across your whole pipeline.</p></div>
+        </article>
+        <article class="feat reveal">
+          <img src="screenshots/opencloser-ai-persona-builder.webp" alt="Voice engine architect configuring AI caller personality, emotion matrix, and sales framework" loading="lazy">
+          <div class="body"><div class="icon">🎛️</div><h3>Voice Engine Architect</h3><p>Design your caller: Gemini, OpenAI, or ElevenLabs voices, a 5-axis emotion matrix, and SPIN / Challenger / Sandler sales frameworks.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="alt">
+    <div class="wrap">
+      <h2 class="reveal">Live in three steps</h2>
+      <p class="sub reveal">From install to AI cold call in under ten minutes. No API key required to start.</p>
+      <div class="steps">
+        <div class="step reveal">
+          <h3>Describe your market</h3>
+          <p>Chat with the AI strategist for two minutes. It builds your ICP, targeting filters, and outreach angles automatically.</p>
+          <img src="screenshots/opencloser-onboarding-ai-sdr-setup.webp" alt="AI onboarding chat that builds your Ideal Customer Profile" loading="lazy">
+        </div>
+        <div class="step reveal">
+          <h3>Hunt &amp; score leads</h3>
+          <p>The researcher fills your pipeline and scores every prospect, so you always know who to call first.</p>
+          <img src="screenshots/opencloser-pipeline-kanban.webp" alt="Kanban sales pipeline with AI-scored leads across discovery and outreach stages" loading="lazy">
+        </div>
+        <div class="step reveal">
+          <h3>Let the AI call</h3>
+          <p>Pick a lead, hit Initiate, and watch the War Room run a live call — sentiment, objections, and coaching in real time.</p>
+          <img src="screenshots/opencloser-lead-detail.webp" alt="Lead detail page with one-click AI call initiation" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="video">
+    <div class="wrap">
+      <h2 class="reveal">Watch it sell</h2>
+      <p class="sub reveal">23 seconds. One seller\u2019s first morning: market → ICP → scored leads → live AI call. No filler.</p>
+      <div class="video-frame reveal">
+        <video controls preload="metadata" poster="opencloser-launch-poster.jpg">
+          <source src="opencloser-launch.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots" class="alt">
+    <div class="wrap">
+      <h2 class="reveal">Every window</h2>
+      <p class="sub reveal">The full app, screen by screen — dashboard, pipeline, intelligence, persona, hunter, and settings.</p>
+      <div class="shot-grid">
+        <div class="shot reveal"><img src="screenshots/opencloser-dashboard-home.webp" alt="OpenCloser sales dashboard with KPI cards, pipeline status chart, and recent call activity" loading="lazy"><div class="cap">Dashboard — KPIs &amp; pipeline health</div></div>
+        <div class="shot reveal"><img src="screenshots/opencloser-pipeline-kanban.webp" alt="OpenCloser Kanban CRM with discovery, outbound, audit, and closed stages" loading="lazy"><div class="cap">Pipeline — Kanban CRM</div></div>
+        <div class="shot reveal"><img src="screenshots/opencloser-call-intelligence.webp" alt="Call intelligence center with success rate, durations, and chronological call records" loading="lazy"><div class="cap">Call Intelligence — every call, analyzed</div></div>
+        <div class="shot reveal"><img src="screenshots/opencloser-ai-persona-builder.webp" alt="AI persona builder with voice providers, personality presets, and emotion sliders" loading="lazy"><div class="cap">Persona — design your caller</div></div>
+        <div class="shot reveal"><img src="screenshots/opencloser-lead-hunter.webp" alt="Lead hunter with ICP filters and AI campaign generation" loading="lazy"><div class="cap">Lead Hunter — prospects on tap</div></div>
+        <div class="shot reveal"><img src="screenshots/opencloser-settings.webp" alt="System configuration with voice engine keys, phone lines, and appearance settings" loading="lazy"><div class="cap">Settings — keys, lines, offline AI</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <h2 class="reveal">Why teams switch</h2>
+      <p class="sub reveal">Traditional SDR platforms charge per seat, per month, forever — and keep your data. OpenCloser flips every row.</p>
+      <div class="cmp reveal">
+        <table>
+          <tr><th>Capability</th><th>Typical SDR SaaS</th><th>OpenCloser</th></tr>
+          <tr><td>Price</td><td>$280–$1,000+/mo per seat</td><td>Free, MIT licensed</td></tr>
+          <tr><td>Your customer data</td><td>Their cloud</td><td>Your SQLite file</td></tr>
+          <tr><td>AI cold calling</td><td>Add-on or extra $$$$</td><td>Built into the War Room</td></tr>
+          <tr><td>Lead research</td><td>Manual or another tool</td><td>AI researcher + auto-scoring</td></tr>
+          <tr><td>Sales coaching</td><td>Calendar roulette</td><td>24/7 AI sparring partner</td></tr>
+          <tr><td>Works offline</td><td>No</td><td>Yes — local Ollama</td></tr>
+          <tr><td>API keys</td><td>Stored by vendor</td><td>Yours, in your browser</td></tr>
+          <tr><td>Code you can audit</td><td>No</td><td>Every line, on GitHub</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="alt">
+    <div class="wrap">
+      <h2 class="reveal">Questions, answered</h2>
+      <p class="sub reveal">The short version. The code is the long version.</p>
+      <div class="faq">
+        <details class="reveal"><summary>Is OpenCloser really free and open source?</summary><p>Yes — MIT licensed, no SaaS fees, no per-seat pricing, no cloud subscription. You own the entire stack, forever.</p></details>
+        <details class="reveal"><summary>Does it work without an API key?</summary><p>Yes. Demo mode ships 10 realistic seed leads, simulated AI calls, and full functionality with fallback data. Add a Gemini, OpenAI, or ElevenLabs key when you want real AI — or point it at local Ollama and skip keys entirely.</p></details>
+        <details class="reveal"><summary>Is my data sent to the cloud?</summary><p>No. Everything lives in a local SQLite database on your machine. API keys stay in your browser's localStorage and travel only to the provider you configure — as headers, never in URLs.</p></details>
+        <details class="reveal"><summary>How does the AI cold calling work?</summary><p>The War Room connects to Twilio phone lines (or runs in mock mode with zero setup). The AI caller dials prospects, reads sentiment live, detects objections, and surfaces coaching tips mid-call — over a bundled cloudflared tunnel, no virtual cables required.</p></details>
+        <details class="reveal"><summary>What platforms are supported?</summary><p>macOS (Apple Silicon + Intel), Windows x64, and Linux x64 — via .dmg, .msi/.exe, and .deb/.AppImage/.rpm on the releases page.</p></details>
+        <details class="reveal"><summary>I'm a developer — can I extend it?</summary><p>Absolutely. React 19 + TypeScript frontend, Rust/Tauri backend, 24 typed invoke commands, Zustand stores, and 99 passing tests. See AGENTS.md in the repo for the full contributor guide.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap dl">
+      <h2 class="reveal">Download v0.2.0</h2>
+      <p class="sub reveal">Free forever. No account, no trial clock, no credit card. Just the app.</p>
+      <div class="dl-grid">
+        <a class="dl-card reveal" href="https://github.com/issacops/opencloser-v2/releases/download/v0.2.0/OpenCloser_0.2.0_aarch64.dmg"><div class="os">🖥️</div><h3>macOS</h3><small>Apple Silicon · .dmg</small></a>
+        <a class="dl-card reveal" href="https://github.com/issacops/opencloser-v2/releases/download/v0.2.0/OpenCloser_0.2.0_x64-setup.exe"><div class="os">🪟</div><h3>Windows</h3><small>x64 · .exe installer</small></a>
+        <a class="dl-card reveal" href="https://github.com/issacops/opencloser-v2/releases/download/v0.2.0/OpenCloser_0.2.0_amd64.AppImage"><div class="os">🐧</div><h3>Linux</h3><small>x64 · .AppImage</small></a>
+      </div>
+      <p class="dl-note reveal">Prefer a package manager style? Also on the <a href="https://github.com/issacops/opencloser-v2/releases/tag/v0.2.0">releases page</a>: Intel .dmg, .msi, .deb, .rpm. Or build from source — <a href="https://github.com/issacops/opencloser-v2#--quick-start">three commands</a>.</p>
+      <div class="cta" style="margin-top: 30px;">
+        <a class="btn btn-primary" href="https://github.com/issacops/opencloser-v2">⭐ Star the repo</a>
+      </div>
+    </div>
+  </section>
 
   <footer>
-    <p>OpenCloser — Open Source AI SDR Platform</p>
-    <p><a href="https://github.com/issacops/opencloser-v2">GitHub</a> · <a href="https://github.com/issacops/opencloser-v2/releases">Releases</a> · <a href="https://github.com/issacops/opencloser-v2/blob/main/LICENSE">MIT License</a></p>
+    <div class="wrap">
+      <span>📞 <b>OpenCloser</b> — open source AI SDR · MIT · v0.2.0</span>
+      <span><a href="https://github.com/issacops/opencloser-v2">GitHub</a> · <a href="https://github.com/issacops/opencloser-v2/releases">Releases</a> · <a href="https://github.com/issacops/opencloser-v2/blob/main/docs/press-kit.md">Press kit</a> · <a href="https://github.com/issacops/opencloser-v2/blob/main/docs/launch-checklist.md">Launch checklist</a></span>
+    </div>
   </footer>
+
+  <script>
+    (function () {
+      if (!("IntersectionObserver" in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    })();
+  </script>
 </body>
 </html>

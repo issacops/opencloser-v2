@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://issacops.github.io/opencloser-v2/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://issacops.github.io/opencloser-v2/#features</loc>
-    <lastmod>2026-10-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://issacops.github.io/opencloser-v2/#screenshots</loc>
-    <lastmod>2026-10-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://issacops.github.io/opencloser-v2/#comparison</loc>
-    <lastmod>2026-10-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-war-room-ai-cold-calling.webp</image:loc>
+      <image:title>OpenCloser War Room — live AI cold call</image:title>
+      <image:caption>Live AI cold call with real-time sentiment analysis, objection detection, and sales coaching</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-dashboard-home.webp</image:loc>
+      <image:title>OpenCloser sales dashboard</image:title>
+      <image:caption>KPI dashboard with pipeline volume, success rate, outbound calls, and deal analytics</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-pipeline-kanban.webp</image:loc>
+      <image:title>OpenCloser Kanban pipeline CRM</image:title>
+      <image:caption>Kanban CRM with AI-scored leads across discovery, outbound, audit, and closed stages</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-ai-persona-builder.webp</image:loc>
+      <image:title>OpenCloser AI persona builder</image:title>
+      <image:caption>Voice engine architect with personality presets and a five-axis emotion matrix</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-lead-hunter.webp</image:loc>
+      <image:title>OpenCloser AI lead hunter</image:title>
+      <image:caption>AI lead generation engine with ICP filters and targeting context</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://issacops.github.io/opencloser-v2/screenshots/opencloser-call-intelligence.webp</image:loc>
+      <image:title>OpenCloser call intelligence</image:title>
+      <image:caption>Call analytics with success rate, durations, outcome spread, and chronological records</image:caption>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://issacops.github.io/opencloser-v2/opencloser-launch-poster.jpg</video:thumbnail_loc>
+      <video:title>OpenCloser — Open Source AI SDR (Launch Video)</video:title>
+      <video:description>One seller\u2019s first morning: market description to live AI cold call by 11:30 AM.</video:description>
+      <video:content_loc>https://issacops.github.io/opencloser-v2/opencloser-launch.mp4</video:content_loc>
+      <video:duration>23</video:duration>
+      <video:publication_date>2026-10-03</video:publication_date>
+    </video:video>
   </url>
 </urlset>
