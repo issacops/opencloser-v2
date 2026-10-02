@@ -1,24 +1,9 @@
 import { create } from "zustand";
-import {
-  AIPersona,
-  DEFAULT_PERSONA,
-  SalesFramework,
-  VoicePreset,
-  VOICE_PRESETS,
-} from "../types/persona";
-import { ProviderId } from "../features/voice/lib/providers";
+import { AIPersona, DEFAULT_PERSONA } from "../types/persona";
 
 interface PersonaState {
   persona: AIPersona;
-  updateEmotion: (key: keyof AIPersona["emotionalModulation"], value: number | boolean) => void;
-  updateSpeech: (key: keyof AIPersona["speechPatterns"], value: any) => void;
-  applyPreset: (preset: VoicePreset) => void;
-  setProvider: (provider: ProviderId) => void;
-  setFramework: (framework: SalesFramework) => void;
-  setVoiceId: (voiceId: string) => void;
-  setLanguage: (language: string) => void;
-  save: () => void;
-  loadFromStorage: () => void;
+  setPersona: (persona: AIPersona) => void;
 }
 
 function loadPersona(): AIPersona {
@@ -29,71 +14,13 @@ function loadPersona(): AIPersona {
   return DEFAULT_PERSONA;
 }
 
-export const usePersonaStore = create<PersonaState>((set, get) => ({
+export const usePersonaStore = create<PersonaState>((set) => ({
   persona: loadPersona(),
 
-  updateEmotion: (key, value) =>
-    set((s) => ({
-      persona: {
-        ...s.persona,
-        voicePreset: "Custom",
-        emotionalModulation: {
-          ...s.persona.emotionalModulation,
-          [key]: value,
-        },
-      },
-    })),
-
-  updateSpeech: (key, value) =>
-    set((s) => ({
-      persona: {
-        ...s.persona,
-        speechPatterns: { ...s.persona.speechPatterns, [key]: value },
-      },
-    })),
-
-  applyPreset: (preset) => {
-    if (preset === "Custom") return;
-    const overrides = VOICE_PRESETS[preset];
-    set((s) => ({
-      persona: {
-        ...s.persona,
-        voicePreset: preset,
-        emotionalModulation: {
-          ...s.persona.emotionalModulation,
-          ...overrides,
-        },
-      },
-    }));
-  },
-
-  setProvider: (provider) =>
-    set((s) => ({
-      persona: { ...s.persona, provider },
-    })),
-
-  setFramework: (framework) =>
-    set((s) => ({
-      persona: { ...s.persona, framework },
-    })),
-
-  setVoiceId: (voiceId) =>
-    set((s) => ({
-      persona: { ...s.persona, voiceId },
-    })),
-
-  setLanguage: (language) =>
-    set((s) => ({
-      persona: { ...s.persona, language },
-    })),
-
-  save: () => {
+  setPersona: (persona) => {
+    set({ persona });
     try {
-      localStorage.setItem("ai_persona", JSON.stringify(get().persona));
+      localStorage.setItem("ai_persona", JSON.stringify(persona));
     } catch {}
-  },
-
-  loadFromStorage: () => {
-    set({ persona: loadPersona() });
   },
 }));

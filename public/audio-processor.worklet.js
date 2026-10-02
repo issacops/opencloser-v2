@@ -14,7 +14,7 @@ class PCMCaptureProcessor extends AudioWorkletProcessor {
     this._muted = false;
 
     this.port.onmessage = (e) => {
-      if (e.data.type === 'setMuted') {
+      if (e.data.type === "setMuted") {
         this._muted = e.data.muted;
       }
     };
@@ -29,7 +29,7 @@ class PCMCaptureProcessor extends AudioWorkletProcessor {
     if (this._muted) {
       // Send silence so VAD on server doesn't time out
       const silence = new Float32Array(channelData.length);
-      this.port.postMessage({ type: 'audio', buffer: silence }, [silence.buffer]);
+      this.port.postMessage({ type: "audio", buffer: silence }, [silence.buffer]);
       return true;
     }
 
@@ -39,7 +39,7 @@ class PCMCaptureProcessor extends AudioWorkletProcessor {
       if (this._bufferIndex >= this._buffer.length) {
         // Post a copy to the main thread (transfer ownership for zero-copy)
         const toSend = this._buffer.slice(0);
-        this.port.postMessage({ type: 'audio', buffer: toSend }, [toSend.buffer]);
+        this.port.postMessage({ type: "audio", buffer: toSend }, [toSend.buffer]);
         this._bufferIndex = 0;
       }
     }
@@ -48,4 +48,4 @@ class PCMCaptureProcessor extends AudioWorkletProcessor {
   }
 }
 
-registerProcessor('pcm-capture-processor', PCMCaptureProcessor);
+registerProcessor("pcm-capture-processor", PCMCaptureProcessor);

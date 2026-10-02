@@ -1,10 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { ICP } from "../types";
-
-function getGeminiKey(): string | undefined {
-  const key = localStorage.getItem("gemini_api_key");
-  return key || undefined;
-}
+import { getGeminiKey, getLocalAIConfig } from "./apiKey";
 
 export interface LeadResult {
   name: string;
@@ -29,16 +25,22 @@ export interface CallAnalysis {
 export async function simulateLeadScraping(
   query: string,
   location: string,
-  icp: ICP | null
+  icp: ICP | null,
 ): Promise<LeadResult[]> {
-  return invoke("simulate_lead_scraping", { query, location, icp, apiKey: getGeminiKey() });
+  return invoke("simulate_lead_scraping", {
+    query,
+    location,
+    icp,
+    apiKey: getGeminiKey(),
+    ...getLocalAIConfig(),
+  });
 }
 
 export async function analyzeCallTranscript(
   transcript: string,
   leadName: string,
   leadCompany: string,
-  icp: string | null
+  icp: string | null,
 ): Promise<CallAnalysis> {
   return invoke("analyze_call_transcript", {
     transcript,
@@ -46,6 +48,7 @@ export async function analyzeCallTranscript(
     leadCompany,
     icp,
     apiKey: getGeminiKey(),
+    ...getLocalAIConfig(),
   });
 }
 
@@ -64,7 +67,9 @@ export async function objectionTrainerTurn(req: {
   objection: string;
   difficulty: string;
   messages: { role: string; text: string }[];
-  icp: any;
+  icp: ICP | null;
 }): Promise<ObjectionTrainerResponse> {
-  return invoke("objection_trainer_turn", { req: { ...req, apiKey: getGeminiKey() } });
+  return invoke("objection_trainer_turn", {
+    req: { ...req, apiKey: getGeminiKey(), ...getLocalAIConfig() },
+  });
 }

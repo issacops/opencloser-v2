@@ -24,15 +24,12 @@ export async function getLeads(): Promise<Lead[]> {
   return invoke("get_leads");
 }
 
-export async function updateLeadStatus(
-  id: string,
-  status: LeadStatus
-): Promise<void> {
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<void> {
   return invoke("update_lead_status", { id, status });
 }
 
 export async function addLeads(
-  leads: { id: string; name: string; company: string; phone: string; score: number }[]
+  leads: { id: string; name: string; company: string; phone: string; score: number }[],
 ): Promise<number> {
   return invoke("add_leads", { leads });
 }
@@ -50,7 +47,7 @@ export async function addCallLog(
   leadId: string,
   durationSeconds: number,
   transcript: string,
-  status: string
+  status: string,
 ): Promise<void> {
   return invoke("add_call_log", {
     id,
@@ -69,11 +66,7 @@ export async function getLeadNotes(leadId: string): Promise<LeadNote[]> {
   return invoke("get_lead_notes", { leadId });
 }
 
-export async function addLeadNote(
-  id: string,
-  leadId: string,
-  content: string
-): Promise<void> {
+export async function addLeadNote(id: string, leadId: string, content: string): Promise<void> {
   return invoke("add_lead_note", { id, leadId, content });
 }
 

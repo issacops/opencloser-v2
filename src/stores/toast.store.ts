@@ -1,12 +1,7 @@
 import { create } from "zustand";
+import type { ToastMessage, ToastType } from "../ui/components/Toast";
 
-export type ToastType = "success" | "error" | "info" | "warning";
-
-export interface ToastMessage {
-  id: string;
-  type: ToastType;
-  message: string;
-}
+let toastCounter = 0;
 
 interface ToastState {
   toasts: ToastMessage[];
@@ -19,7 +14,7 @@ export const useToastStore = create<ToastState>((set) => ({
 
   addToast: (type, message) =>
     set((s) => ({
-      toasts: [...s.toasts, { id: Date.now().toString(), type, message }],
+      toasts: [...s.toasts, { id: `${Date.now()}_${++toastCounter}`, type, message }],
     })),
 
   removeToast: (id) =>

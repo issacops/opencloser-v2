@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,27 +7,27 @@
 @layer base {
   :root {
     /* Light Professional Palette matched to Finexy */
-    --bg-primary: #F4F5F7;
-    --bg-secondary: #E9ECEF;
-    --bg-card: #FFFFFF;
-    --bg-elevated: #FFFFFF;
+    --bg-primary: #f4f5f7;
+    --bg-secondary: #e9ecef;
+    --bg-card: #ffffff;
+    --bg-elevated: #ffffff;
 
-    --border-default: #F0F0F0;
-    --border-hover: #E0E0E0;
-    --border-focus: #FF5C39;
+    --border-default: #f0f0f0;
+    --border-hover: #e0e0e0;
+    --border-focus: #ff5c39;
 
-    --accent-coral: #FF5C39;
-    --accent-coral-light: #FFF1EE;
-    --accent-coral-medium: #FFD4CC;
-    --accent-dark: #1A1D20;
-    --accent-emerald: #10B981;
-    --accent-amber: #F59E0B;
-    --accent-rose: #EF4444;
-    --accent-blue: #3B82F6;
+    --accent-coral: #ff5c39;
+    --accent-coral-light: #fff1ee;
+    --accent-coral-medium: #ffd4cc;
+    --accent-dark: #1a1d20;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #ef4444;
+    --accent-blue: #3b82f6;
 
     --text-primary: #171717;
-    --text-secondary: #6B7280;
-    --text-muted: #A1A1AA;
+    --text-secondary: #6b7280;
+    --text-muted: #a1a1aa;
 
     --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.03);
     --shadow-card-hover: 0 12px 36px rgba(0, 0, 0, 0.06);
@@ -41,11 +41,13 @@
     --radius-2xl: 32px;
     --radius-pill: 999px;
 
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
   }
 
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
@@ -70,7 +72,9 @@
     width: 6px;
     height: 6px;
   }
-  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
   ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.12);
     border-radius: 100px;
@@ -90,11 +94,14 @@
     border-radius: 4px;
   }
 
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     font-family: var(--font-sans);
   }
 
-  code, .font-mono {
+  code,
+  .font-mono {
     font-family: var(--font-mono) !important;
   }
 }
@@ -168,7 +175,7 @@
     background: var(--accent-dark);
     color: #ffffff;
     border-color: transparent;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   }
 
   /* Icon sidebar item */
@@ -210,28 +217,28 @@
   }
 
   .badge-success {
-    background: #DCFCE7;
+    background: #dcfce7;
     color: #16a34a;
   }
 
   .badge-pending {
-    background: #FEF3C7;
+    background: #fef3c7;
     color: #d97706;
   }
 
   .badge-progress {
-    background: #DBEAFE;
+    background: #dbeafe;
     color: #2563eb;
   }
 
   .badge-error {
-    background: #FEE2E2;
+    background: #fee2e2;
     color: #dc2626;
   }
 
   .badge-inactive {
-    background: #F3F4F6;
-    color: #6B7280;
+    background: #f3f4f6;
+    color: #6b7280;
   }
 
   /* Stat number */
@@ -321,7 +328,7 @@
   /* Custom scrollbar container */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.12) transparent;
+    scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
   }
 
   /* Table row */
@@ -336,7 +343,7 @@
   .progress-bar {
     height: 8px;
     border-radius: 100px;
-    background: #E8E8E4;
+    background: #e8e8e4;
     overflow: hidden;
   }
 
@@ -357,7 +364,9 @@
     font-size: 14px;
     color: var(--text-primary);
     font-family: var(--font-sans);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .input-field:focus {
@@ -385,28 +394,56 @@
 
 /* Keyframe Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-fade-in {
@@ -431,77 +468,164 @@
   opacity: 0;
 }
 
-.stagger-children > *:nth-child(1) { animation-delay: 0.04s; }
-.stagger-children > *:nth-child(2) { animation-delay: 0.08s; }
-.stagger-children > *:nth-child(3) { animation-delay: 0.12s; }
-.stagger-children > *:nth-child(4) { animation-delay: 0.16s; }
-.stagger-children > *:nth-child(5) { animation-delay: 0.20s; }
-.stagger-children > *:nth-child(6) { animation-delay: 0.24s; }
-.stagger-children > *:nth-child(7) { animation-delay: 0.28s; }
-.stagger-children > *:nth-child(8) { animation-delay: 0.32s; }
+.stagger-children > *:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.stagger-children > *:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.stagger-children > *:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.stagger-children > *:nth-child(4) {
+  animation-delay: 0.16s;
+}
+.stagger-children > *:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.stagger-children > *:nth-child(6) {
+  animation-delay: 0.24s;
+}
+.stagger-children > *:nth-child(7) {
+  animation-delay: 0.28s;
+}
+.stagger-children > *:nth-child(8) {
+  animation-delay: 0.32s;
+}
 
 /* ═══════════════════════════════════════════════════════════
    WAR ROOM — Premium Animations & Micro-Interactions
    ═══════════════════════════════════════════════════════════ */
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.2); }
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(239, 68, 68, 0.6),
+      0 0 40px rgba(239, 68, 68, 0.2);
+  }
 }
 
 @keyframes breathe {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.08); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 
 @keyframes transcriptBubble {
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes dotBounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-  40% { transform: scale(1); opacity: 1; }
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInDown {
-  from { opacity: 0; transform: translateY(-16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes glowPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 @keyframes countUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes waveform {
-  0%, 100% { transform: scaleY(0.4); }
-  50% { transform: scaleY(1); }
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 @keyframes ringPulse {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 @keyframes objectionSlide {
-  from { opacity: 0; transform: translateX(24px) scale(0.95); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateX(24px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 
 /* Kanban drag-drop transitions */
 .kanban-card {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, opacity 0.25s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
 }
 .kanban-card:active {
   transform: scale(0.97) rotate(0.5deg);
@@ -511,45 +635,88 @@
 .kanban-column-drop-active {
   border-color: var(--accent-coral) !important;
   box-shadow: inset 0 0 0 2px var(--accent-coral-light);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   border-radius: var(--radius-lg);
 }
 
 .card-exit {
   opacity: 0;
   transform: scale(0.9);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .card-enter {
   animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
-.animate-breathe { animation: breathe 3s ease-in-out infinite; }
-.animate-transcript-bubble { animation: transcriptBubble 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-dot-bounce { animation: dotBounce 1.2s ease-in-out infinite; }
-.animate-slide-in-down { animation: slideInDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.animate-glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
-.animate-count-up { animation: countUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.animate-waveform { animation: waveform 0.5s ease-in-out infinite; }
-.animate-ring-pulse { animation: ringPulse 1.5s ease-out infinite; }
-.animate-objection-slide { animation: objectionSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+.animate-transcript-bubble {
+  animation: transcriptBubble 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.animate-dot-bounce {
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+.animate-slide-in-down {
+  animation: slideInDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+.animate-count-up {
+  animation: countUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-waveform {
+  animation: waveform 0.5s ease-in-out infinite;
+}
+.animate-ring-pulse {
+  animation: ringPulse 1.5s ease-out infinite;
+}
+.animate-objection-slide {
+  animation: objectionSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
 /* Stagger for transcript lines */
-.transcript-stagger > *:nth-child(1) { animation-delay: 0s; }
-.transcript-stagger > *:nth-child(2) { animation-delay: 0.06s; }
-.transcript-stagger > *:nth-child(3) { animation-delay: 0.12s; }
-.transcript-stagger > *:nth-child(4) { animation-delay: 0.18s; }
+.transcript-stagger > *:nth-child(1) {
+  animation-delay: 0s;
+}
+.transcript-stagger > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.transcript-stagger > *:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.transcript-stagger > *:nth-child(4) {
+  animation-delay: 0.18s;
+}
 
 /* Dot bounce for typing indicator */
-.dot-bounce-1 { animation: dotBounce 1.2s ease-in-out infinite; animation-delay: 0s; }
-.dot-bounce-2 { animation: dotBounce 1.2s ease-in-out infinite; animation-delay: 0.15s; }
-.dot-bounce-3 { animation: dotBounce 1.2s ease-in-out infinite; animation-delay: 0.3s; }
+.dot-bounce-1 {
+  animation: dotBounce 1.2s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.dot-bounce-2 {
+  animation: dotBounce 1.2s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+.dot-bounce-3 {
+  animation: dotBounce 1.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
 
 /* Button press haptics */
 .btn-press {
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+  transition:
+    transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s ease;
 }
 .btn-press:active {
   transform: scale(0.95);
@@ -583,15 +750,27 @@
 
 /* Smooth value transitions on bars */
 .bar-transition {
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  transition:
+    width 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s ease;
 }
 
 /* Glow effects for War Room elements */
-.glow-red { box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
-.glow-indigo { box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); }
-.glow-emerald { box-shadow: 0 0 12px rgba(16, 185, 129, 0.3); }
-.glow-amber { box-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
-.glow-purple { box-shadow: 0 0 12px rgba(168, 85, 247, 0.3); }
+.glow-red {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+.glow-indigo {
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+.glow-emerald {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+.glow-amber {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+.glow-purple {
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+}
 
 /* ═══════════════════════════════════════════════════════════
    DARK MODE
@@ -603,8 +782,8 @@ html.dark {
   --bg-elevated: #1f1f1f;
   --border-default: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(255, 255, 255, 0.14);
-  --border-focus: #FF5C39;
-  --accent-coral: #FF5C39;
+  --border-focus: #ff5c39;
+  --accent-coral: #ff5c39;
   --accent-coral-light: rgba(255, 92, 57, 0.1);
   --accent-dark: #e5e5e5;
   --text-primary: #e5e5e5;

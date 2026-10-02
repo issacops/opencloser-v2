@@ -69,8 +69,14 @@ export function VoiceVisualizer({ isActive, analyser, role, size = 80 }: VoiceVi
 
       // Outer glow
       const outerGlow = ctx.createRadialGradient(cx, cy, radius - 2, cx, cy, glowRadius + 6);
-      outerGlow.addColorStop(0, `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.15 : 0.05})`);
-      outerGlow.addColorStop(0.6, `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.06 : 0.02})`);
+      outerGlow.addColorStop(
+        0,
+        `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.15 : 0.05})`,
+      );
+      outerGlow.addColorStop(
+        0.6,
+        `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.06 : 0.02})`,
+      );
       outerGlow.addColorStop(1, `rgba(${primaryR}, ${primaryG}, ${primaryB}, 0)`);
       ctx.beginPath();
       ctx.arc(cx, cy, glowRadius + 6, 0, Math.PI * 2);
@@ -105,8 +111,14 @@ export function VoiceVisualizer({ isActive, analyser, role, size = 80 }: VoiceVi
 
       // 3. Center circle with subtle gradient fill
       const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      centerGrad.addColorStop(0, `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.12 : 0.04})`);
-      centerGrad.addColorStop(1, `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.04 : 0.01})`);
+      centerGrad.addColorStop(
+        0,
+        `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.12 : 0.04})`,
+      );
+      centerGrad.addColorStop(
+        1,
+        `rgba(${primaryR}, ${primaryG}, ${primaryB}, ${isActive ? 0.04 : 0.01})`,
+      );
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fillStyle = centerGrad;
@@ -133,10 +145,5 @@ export function VoiceVisualizer({ isActive, analyser, role, size = 80 }: VoiceVi
     };
   }, [analyser, isActive, role, size]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: size, height: size }}
-    />
-  );
+  return <canvas ref={canvasRef} style={{ width: size, height: size }} />;
 }

@@ -1,8 +1,4 @@
-export type LeadStatus =
-  | "Discovery"
-  | "Outbound Call"
-  | "Audit Requested"
-  | "Closed";
+export type LeadStatus = "Discovery" | "Outbound Call" | "Audit Requested" | "Closed";
 
 export interface Lead {
   id: string;
@@ -18,36 +14,6 @@ export interface Lead {
   created_at: string;
 }
 
-export interface Activity {
-  id: string;
-  lead_id: string;
-  type: string;
-  description: string;
-  timestamp: string;
-  duration: number;
-}
-
-export interface Campaign {
-  id: string;
-  name: string;
-  target_criteria: string;
-  status: string;
-  created_at: string;
-}
-
-export interface CallSession {
-  id: string;
-  lead_id: string;
-  provider: string;
-  duration_seconds: number;
-  transcript: string;
-  status: string;
-  sentiment: string;
-  objections_handled: string;
-  emotion_log: string;
-  created_at: string;
-}
-
 export interface ICP {
   targetAudience: string;
   industry: string;
@@ -57,6 +23,7 @@ export interface ICP {
   objections: string[];
   competitorNames: string[];
   valueProposition: string;
-  salesMethodology: "SPIN Selling" | "Challenger Sale" | "Sandler System" | "Straight Line Persuasion";
+  salesMethodology:
+    "SPIN Selling" | "Challenger Sale" | "Sandler System" | "Straight Line Persuasion";
   systemPrompt: string;
 }

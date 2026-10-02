@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "OpenCloser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "identifier": "ai.opencloser.app",
   "build": {
     "frontendDist": "../dist",
@@ -20,7 +20,13 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://generativelanguage.googleapis.com wss://generativelanguage.googleapis.com http://127.0.0.1:* ws://127.0.0.1:*; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; frame-src 'none'",
+      "devCsp": "default-src 'self' http://localhost:5173; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost http://localhost:5173 ws://localhost:5173 https://generativelanguage.googleapis.com wss://generativelanguage.googleapis.com http://127.0.0.1:* ws://127.0.0.1:*; media-src 'self' blob: data:; object-src 'none'"
+    }
+  },
+  "plugins": {
+    "shell": {
+      "open": true
     }
   },
   "bundle": {

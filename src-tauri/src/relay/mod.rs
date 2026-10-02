@@ -24,7 +24,10 @@ pub async fn start_relay_server() -> Result<RelayPort, Box<dyn std::error::Error
 async fn handle_connection(stream: TcpStream) {
     let ws_stream = match tokio_tungstenite::accept_async(stream).await {
         Ok(ws) => ws,
-        Err(e) => { error!("WebSocket accept failed: {}", e); return; }
+        Err(e) => {
+            error!("WebSocket accept failed: {}", e);
+            return;
+        }
     };
 
     let (mut client_tx, mut client_rx) = ws_stream.split();
@@ -33,26 +36,49 @@ async fn handle_connection(stream: TcpStream) {
     let config = match client_rx.next().await {
         Some(Ok(Message::Text(text))) => match serde_json::from_str::<serde_json::Value>(&text) {
             Ok(v) => v,
-            Err(_) => { let _ = client_tx.send(Message::Text(r#"{"type":"error","message":"Invalid config JSON"}"#.into())).await; return; }
+            Err(_) => {
+                let _ = client_tx
+                    .send(Message::Text(
+                        r#"{"type":"error","message":"Invalid config JSON"}"#.into(),
+                    ))
+                    .await;
+                return;
+            }
         },
-        _ => { let _ = client_tx.send(Message::Text(r#"{"type":"error","message":"Expected config message"}"#.into())).await; return; }
+        _ => {
+            let _ = client_tx
+                .send(Message::Text(
+                    r#"{"type":"error","message":"Expected config message"}"#.into(),
+                ))
+                .await;
+            return;
+        }
     };
 
     let provider = config["provider"].as_str().unwrap_or("openai");
     let api_key = config["apiKey"].as_str().unwrap_or("");
-    let model = config["model"].as_str().unwrap_or("gpt-4o-realtime-preview");
+    let model = config["model"]
+        .as_str()
+        .unwrap_or("gpt-4o-realtime-preview");
     let voice = config["voice"].as_str().unwrap_or("alloy");
     let system_prompt = config["systemPrompt"].as_str().unwrap_or("");
 
     if api_key.is_empty() {
-        let _ = client_tx.send(Message::Text(r#"{"type":"error","message":"API key required"}"#.into())).await;
+        let _ = client_tx
+            .send(Message::Text(
+                r#"{"type":"error","message":"API key required"}"#.into(),
+            ))
+            .await;
         return;
     }
 
     let (provider_url, connect_payload) = match provider {
         "elevenlabs" => {
             let agent_id = config["agentId"].as_str().unwrap_or("");
-            let url = format!("wss://api.elevenlabs.io/v1/convai/conversation?agent_id={}", agent_id);
+            let url = format!(
+                "wss://api.elevenlabs.io/v1/convai/conversation?agent_id={}",
+                agent_id
+            );
             let payload = serde_json::json!({
                 "xi_api_key": api_key,
                 "agent_id": agent_id,
@@ -81,7 +107,12 @@ async fn handle_connection(stream: TcpStream) {
     let (provider_ws, _) = match tokio_tungstenite::connect_async(&provider_url).await {
         Ok(ws) => ws,
         Err(e) => {
-            let _ = client_tx.send(Message::Text(format!(r#"{{"type":"error","message":"Provider connection failed: {}"}}"#, e).into())).await;
+            let _ = client_tx
+                .send(Message::Text(format!(
+                    r#"{{"type":"error","message":"Provider connection failed: {}"}}"#,
+                    e
+                )))
+                .await;
             return;
         }
     };
@@ -90,11 +121,15 @@ async fn handle_connection(stream: TcpStream) {
 
     // Send config to provider
     if !connect_payload.is_null() {
-        let _ = provider_tx.send(Message::Text(connect_payload.to_string())).await;
+        let _ = provider_tx
+            .send(Message::Text(connect_payload.to_string()))
+            .await;
     }
 
     // Notify client we're ready
-    let _ = client_tx.send(Message::Text(r#"{"type":"ready"}"#.into())).await;
+    let _ = client_tx
+        .send(Message::Text(r#"{"type":"ready"}"#.into()))
+        .await;
 
     let client_tx = Arc::new(Mutex::new(client_tx));
     let provider_tx = Arc::new(Mutex::new(provider_tx));

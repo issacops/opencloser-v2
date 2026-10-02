@@ -12,7 +12,8 @@ export type AppPage =
   | "settings"
   | "persona"
   | "lead_detail"
-  | "trainer";
+  | "trainer"
+  | "welcome";
 
 interface NavigationState {
   currentPage: AppPage;
@@ -25,8 +26,17 @@ interface NavigationState {
   clearSelectedLead: () => void;
 }
 
+function initialPage(): AppPage {
+  try {
+    if (localStorage.getItem("hasCompletedOnboarding")) {
+      return localStorage.getItem("hasCompletedAudioSetup") ? "home" : "audio_setup";
+    }
+  } catch {}
+  return "onboarding";
+}
+
 export const useNavigationStore = create<NavigationState>((set, _get) => ({
-  currentPage: "home",
+  currentPage: initialPage(),
   previousPage: null,
   selectedLeadId: null,
 
@@ -43,8 +53,7 @@ export const useNavigationStore = create<NavigationState>((set, _get) => ({
       selectedLeadId: s.currentPage === "lead_detail" ? null : s.selectedLeadId,
     })),
 
-  selectLead: (leadId) =>
-    set({ selectedLeadId: leadId, currentPage: "lead_detail" }),
+  selectLead: (leadId) => set({ selectedLeadId: leadId, currentPage: "lead_detail" }),
 
   clearSelectedLead: () => set({ selectedLeadId: null }),
 }));

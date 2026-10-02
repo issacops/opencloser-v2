@@ -38,6 +38,12 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          key: ${{ matrix.target }}
+
       - name: Install Linux dependencies
         if: startsWith(matrix.platform, 'ubuntu')
         run: |
@@ -51,11 +57,11 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: TypeScript check
-        run: npx tsc --noEmit
+      - name: Lint & typecheck
+        run: npm run lint
 
       - name: Run tests
-        run: npx vitest run
+        run: npm test
 
       - name: Build release
         uses: tauri-apps/tauri-action@v0
@@ -76,9 +82,9 @@ jobs:
             - AI Sales Coach with objection training (3 difficulty levels)
             - Real-time sentiment and emotion analysis in War Room
             - Post-call AI debrief with auto-generated follow-up emails
-            - 6 Zustand stores + typed service layer
-            - TypeScript strict mode (0 errors)
-            - 35 unit tests with Vitest
+            - Built-in Twilio phone lines with mock mode + auto cloudflared tunnel
+            - Fully offline AI via Ollama (takes priority over cloud when configured)
+            - ESLint + rustfmt/clippy/knip/CI enforcement
             - Lazy-loaded code splitting for fast startup
 
             ### Downloads
@@ -99,7 +105,8 @@ jobs:
             ### Requirements
             - **AI features**: Google Gemini API key (optional — full demo mode without one)
             - **Voice calling**: Microphone + speakers (VoIP mode works without virtual cable)
-            - **Phone bridge**: Virtual audio cable (VB-Cable for Windows, BlackHole for macOS)
+            - **Phone lines**: Twilio credentials optional — mock mode works out of the box (Settings → Phone); optional `cloudflared` binary for auto-tunneling
+            - **VoIP bridge** (optional): Virtual audio cable (VB-Cable for Windows, BlackHole for macOS)
 
           releaseDraft: true
           prerelease: false

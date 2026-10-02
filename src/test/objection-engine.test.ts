@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { detectObjection, detectObjectionInTranscript } from "../features/voice/lib/objection-engine";
+import {
+  detectObjection,
+  detectObjectionInTranscript,
+} from "../features/voice/lib/objection-engine";
 
 describe("objection-engine", () => {
   describe("detectObjection", () => {
@@ -100,9 +103,7 @@ describe("objection-engine", () => {
     });
 
     it("only checks user/prospect lines", () => {
-      const entries = [
-        { role: "model", text: "This is way too expensive" },
-      ];
+      const entries = [{ role: "model", text: "This is way too expensive" }];
       const result = detectObjectionInTranscript(entries);
       expect(result).toBeNull();
     });

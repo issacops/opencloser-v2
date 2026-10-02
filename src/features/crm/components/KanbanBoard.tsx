@@ -1,6 +1,16 @@
 import React, { useState, useEffect, Suspense } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { Lead, LeadStatus, ICP } from "../../../types";
+import {
+  useLeadsQuery,
+  useCallLogsQuery,
+  useUpdateLeadStatusMutation,
+  useDeleteLeadMutation,
+} from "../../../services/queries";
+import { useToastStore } from "../../../stores/toast.store";
+import { useCallStore } from "../../../stores/call.store";
+import { useNavigationStore } from "../../../stores/navigation.store";
+import { usePersonaStore } from "../../../stores/persona.store";
+import type { TranscriptLine } from "../../voice/lib/caller-engine";
 import { KanbanColumn } from "./KanbanColumn";
 import { Onboarding } from "../../onboarding/components/Onboarding";
 import { ICPDisplay } from "../../onboarding/components/ICPDisplay";
@@ -9,143 +19,101 @@ import { LeadHunter } from "../../hunter/components/LeadHunter";
 import { CallLogsView } from "./CallLogsView";
 import { SettingsView } from "./SettingsView";
 import { DashboardHome } from "./DashboardHome";
-import { AIPersona } from "../../../types/persona";
-import { Toast, ToastMessage, ToastType } from "../../../ui/components/Toast";
-import {
-  Phone,
-  Search,
-  Settings,
-  Plus,
-  LayoutDashboard,
-  Target,
-  Bot,
-  Home,
-  Swords,
-  Zap,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
+import { Toast } from "../../../ui/components/Toast";
+import { AppShell } from "../../../components/AppShell";
+import { isDemoMode } from "../../../services/apiKey";
+import { Search } from "lucide-react";
 
-const WarRoom = React.lazy(() => import("../../voice/components/WarRoom").then(m => ({ default: m.WarRoom })));
-const PostCallDebrief = React.lazy(() => import("../../voice/components/PostCallDebrief").then(m => ({ default: m.PostCallDebrief })));
-const AIPersonaBuilder = React.lazy(() => import("./AIPersonaBuilder").then(m => ({ default: m.AIPersonaBuilder })));
-const LeadDetailView = React.lazy(() => import("./LeadDetailView").then(m => ({ default: m.LeadDetailView })));
-const ObjectionTrainer = React.lazy(() => import("../../voice/components/ObjectionTrainer").then(m => ({ default: m.ObjectionTrainer })));
+const WarRoom = React.lazy(() =>
+  import("../../voice/components/WarRoom").then((m) => ({ default: m.WarRoom })),
+);
+const PostCallDebrief = React.lazy(() =>
+  import("../../voice/components/PostCallDebrief").then((m) => ({ default: m.PostCallDebrief })),
+);
+const AIPersonaBuilder = React.lazy(() =>
+  import("./AIPersonaBuilder").then((m) => ({ default: m.AIPersonaBuilder })),
+);
+const LeadDetailView = React.lazy(() =>
+  import("./LeadDetailView").then((m) => ({ default: m.LeadDetailView })),
+);
+const ObjectionTrainer = React.lazy(() =>
+  import("../../voice/components/ObjectionTrainer").then((m) => ({ default: m.ObjectionTrainer })),
+);
 
 const LazyFallback = () => (
-  <div className="flex items-center justify-center h-full" style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontSize: 13 }}>
+  <div
+    className="flex items-center justify-center h-full"
+    style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontSize: 13 }}
+  >
     Loading...
   </div>
 );
 
-const COLUMNS: LeadStatus[] = [
-  "Discovery",
-  "Outbound Call",
-  "Audit Requested",
-  "Closed",
-];
-
-const NAV_ITEMS = [
-  { label: "Overview", state: "home" },
-  { label: "Pipeline", state: "dashboard" },
-  { label: "Call Intelligence", state: "call_logs" },
-  { label: "AI Team", state: "persona" },
-];
-
-const SIDEBAR_TOP = [
-  { icon: Home, state: "home", label: "Overview" },
-  { icon: LayoutDashboard, state: "dashboard", label: "Pipeline" },
-  { icon: Phone, state: "call_logs", label: "Call Intelligence" },
-  { icon: Target, state: "hunter", label: "Lead Researcher" },
-  { icon: Bot, state: "persona", label: "AI Caller" },
-  { icon: Swords, state: "trainer", label: "Sales Coach" },
-];
-
-const SIDEBAR_BOTTOM = [
-  { icon: Settings, state: "settings", label: "Settings" },
-];
+const COLUMNS: LeadStatus[] = ["Discovery", "Outbound Call", "Audit Requested", "Closed"];
 
 export function KanbanBoard() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
+  const leadsQuery = useLeadsQuery();
+  const leads = leadsQuery.data ?? [];
+  const loading = leadsQuery.isLoading;
+  const updateStatusMutation = useUpdateLeadStatusMutation();
+  const deleteLeadMutation = useDeleteLeadMutation();
 
-  const [appState, setAppState] = useState<
-    "onboarding" | "icp_review" | "audio_setup" | "persona_setup" | "home" | "dashboard" | "hunter" | "call_logs" | "settings" | "persona" | "lead_detail" | "trainer" | "welcome"
-  >("onboarding");
-  const [allCallLogs, setAllCallLogs] = useState<any[]>([]);
+  // Navigation (global store)
+  const appState = useNavigationStore((s) => s.currentPage);
+  const setAppState = useNavigationStore((s) => s.navigate);
+
+  const callLogsQuery = useCallLogsQuery();
+  const allCallLogs = callLogsQuery.data ?? [];
+
   const [searchQuery, setSearchQuery] = useState("");
   const [scoreFilter, setScoreFilter] = useState(0);
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const [icpData, setIcpData] = useState<ICP | null>(null);
-  const [persona, setPersona] = useState<AIPersona | null>(null);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-  // Call State
-  const [activeCallLead, setActiveCallLead] = useState<Lead | null>(null);
-  const [isPowerDialing, setIsPowerDialing] = useState(false);
+  // Persona (global store — loads from localStorage on creation)
+  const persona = usePersonaStore((s) => s.persona);
+  const setPersona = usePersonaStore((s) => s.setPersona);
 
-  // Post-Call Debrief State
-  const [debriefData, setDebriefData] = useState<{ lead: Lead; transcript: any[]; duration: number } | null>(null);
+  // Call State (global store)
+  const activeCallLead = useCallStore((s) => s.activeLead);
+  const setActiveCallLead = useCallStore((s) => s.setActiveLead);
+  const isPowerDialing = useCallStore((s) => s.isPowerDialing);
+  const setIsPowerDialing = useCallStore((s) => s.setIsPowerDialing);
+  const debriefData = useCallStore((s) => s.debriefData);
+  const setDebriefData = useCallStore((s) => s.setDebriefData);
 
-  // Toast State
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  // Toast State (global store)
+  const toasts = useToastStore((s) => s.toasts);
+  const addToast = useToastStore((s) => s.addToast);
+  const removeToast = useToastStore((s) => s.removeToast);
 
-  const addToast = (type: ToastType, message: string) => {
-    setToasts((prev) => [...prev, { id: Date.now().toString(), type, message }]);
-  };
-
-  const removeToast = (id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  };
-
+  // One-time bootstrap: restore session, load data, load persona.
   useEffect(() => {
-    // If we're forcing demo mode or there are no API keys, clear data to force restart
-    const hasAnyKey = localStorage.getItem("gemini_api_key") || localStorage.getItem("openai_api_key") || localStorage.getItem("elevenlabs_api_key");
-    if (!hasAnyKey) {
-        localStorage.removeItem("hasCompletedOnboarding");
-        localStorage.removeItem("hasCompletedAudioSetup");
-        localStorage.removeItem("icp_data");
-        // Keep ai_persona so the form is somewhat pre-filled or uses defaults safely
-    }
-
     const completed = localStorage.getItem("hasCompletedOnboarding");
     if (completed) {
-      setAppState("home");
       try {
         const savedIcp = localStorage.getItem("icp_data");
         if (savedIcp) setIcpData(JSON.parse(savedIcp));
-      } catch { localStorage.removeItem("icp_data"); }
+      } catch {
+        localStorage.removeItem("icp_data");
+      }
+      // Resume mid-flow if audio setup never finished, otherwise go home.
+      if (!localStorage.getItem("hasCompletedAudioSetup")) {
+        setAppState("audio_setup");
+      } else {
+        setAppState("home");
+      }
+    } else {
+      setAppState("onboarding");
     }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- intentionally runs once on mount
 
-    fetchLeads();
-    fetchCallLogs();
-    try {
-      const savedPersona = localStorage.getItem("ai_persona");
-      if (savedPersona) setPersona(JSON.parse(savedPersona));
-    } catch { localStorage.removeItem("ai_persona"); }
-  }, []);
-
-  const fetchCallLogs = async () => {
-    try {
-      const data: any = await invoke('get_call_logs');
-      setAllCallLogs(data);
-    } catch (err) {
-      console.error("Failed to fetch call logs:", err);
-    }
-  };
-
-  const fetchLeads = async () => {
-    try {
-      const data: any = await invoke('get_leads');
-      setLeads(data);
-    } catch (error) {
-      console.error("Failed to fetch leads:", error);
-      addToast("error", "Failed to load pipeline data.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Surface lead-loading failures once.
+  useEffect(() => {
+    if (leadsQuery.isError) addToast("error", "Failed to load pipeline data.");
+  }, [leadsQuery.isError]); // eslint-disable-line react-hooks/exhaustive-deps -- addToast is stable enough
 
   const handleDragStart = (e: React.DragEvent, leadId: string) => {
     e.dataTransfer.setData("leadId", leadId);
@@ -157,43 +125,61 @@ export function KanbanBoard() {
     const leadToMove = leads.find((l) => l.id === leadId);
     if (!leadToMove || leadToMove.status === status) return;
 
-    const previousStatus = leadToMove.status;
-    setLeads((prev) => prev.map((lead) => (lead.id === leadId ? { ...lead, status } : lead)));
-
     if (status === "Outbound Call") {
       setActiveCallLead({ ...leadToMove, status });
     }
 
-    try {
-      await invoke('update_lead_status', { id: leadId, status });
-      addToast("success", `Moved to ${status}`);
-      if (status === "Closed") {
-        addToast("success", `🎉 Deal closed with ${leadToMove.company}!`);
-      }
-    } catch (error) {
-      console.error("Failed to update lead status:", error);
-      setLeads((prev) =>
-        prev.map((lead) => (lead.id === leadId ? { ...lead, status: previousStatus } : lead))
-      );
-      addToast("error", `Failed to move lead — reverted to ${previousStatus}.`);
-    }
+    updateStatusMutation.mutate(
+      { id: leadId, status },
+      {
+        onSuccess: () => {
+          addToast("success", `Moved to ${status}`);
+          if (status === "Closed") {
+            addToast("success", `🎉 Deal closed with ${leadToMove.company}!`);
+          }
+        },
+        onError: () => {
+          addToast("error", `Failed to move lead — reverted to ${leadToMove.status}.`);
+        },
+      },
+    );
   };
 
-  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); };
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
 
   const handleOnboardingComplete = (icp: ICP) => {
     setIcpData(icp);
-    try { localStorage.setItem("hasCompletedOnboarding", "true"); } catch {}
-    try { localStorage.setItem("icp_data", JSON.stringify(icp)); } catch {}
-    if (!localStorage.getItem("hasCompletedAudioSetup")) {
-      setAppState("audio_setup");
-    } else {
-      setAppState("icp_review");
-    }
+    try {
+      localStorage.setItem("hasCompletedOnboarding", "true");
+    } catch {}
+    try {
+      localStorage.setItem("icp_data", JSON.stringify(icp));
+    } catch {}
+    // Always review the generated ICP first; welcome routes to audio setup if needed.
+    setAppState("icp_review");
     addToast("success", "AI Sales Strategy generated successfully.");
   };
 
-  const handleDial = (lead: Lead) => { setActiveCallLead(lead); };
+  const handleWelcomeContinue = (destination: "home" | "dashboard") => {
+    if (!localStorage.getItem("hasCompletedAudioSetup")) {
+      sessionStorage.setItem("post_audio_destination", destination);
+      setAppState("audio_setup");
+    } else {
+      setAppState(destination);
+    }
+  };
+
+  const consumePostAudioDestination = (): "home" | "dashboard" => {
+    const dest = sessionStorage.getItem("post_audio_destination");
+    sessionStorage.removeItem("post_audio_destination");
+    return dest === "dashboard" ? "dashboard" : "home";
+  };
+
+  const handleDial = (lead: Lead) => {
+    setActiveCallLead(lead);
+  };
 
   const startPowerDialing = () => {
     const outboundLeads = leads.filter((l) => l.status === "Outbound Call");
@@ -206,7 +192,7 @@ export function KanbanBoard() {
     addToast("info", `Starting Power Dial session with ${outboundLeads.length} leads.`);
   };
 
-  const handleWarRoomClose = (callTranscript?: any[], callDuration?: number) => {
+  const handleWarRoomClose = (callTranscript?: TranscriptLine[], callDuration?: number) => {
     const closedLead = activeCallLead;
     if (isPowerDialing && activeCallLead) {
       const outboundLeads = leads.filter((l) => l.status === "Outbound Call");
@@ -226,343 +212,224 @@ export function KanbanBoard() {
     }
   };
 
-  const isAppShellVisible = !["onboarding", "icp_review", "audio_setup", "persona_setup", "welcome"].includes(appState);
-
-  // Determine active nav
-  const activeNavState = appState === "lead_detail" ? "dashboard" : appState;
-
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--bg-primary)" }}>
+    <>
+      <AppShell
+        currentPage={appState}
+        isPowerDialing={isPowerDialing}
+        isDemoMode={isDemoMode()}
+        onNavigate={setAppState}
+        onPowerDial={startPowerDialing}
+        onStopPowerDial={() => setIsPowerDialing(false)}
+        search={{
+          open: globalSearchOpen,
+          value: globalSearch,
+          onToggle: () => setGlobalSearchOpen(!globalSearchOpen),
+          onChange: (v) => {
+            setGlobalSearch(v);
+            setSearchQuery(v);
+          },
+          onClear: () => {
+            setGlobalSearchOpen(false);
+            setGlobalSearch("");
+            setSearchQuery("");
+          },
+        }}
+      >
+        {appState === "onboarding" && <Onboarding onComplete={handleOnboardingComplete} />}
 
-      {/* ── Top Header ── */}
-          {isAppShellVisible && (
-        <header
-          className="flex items-center justify-between px-8 py-5 shrink-0"
-          style={{ zIndex: 50, background: "transparent" }}
-        >
-          {/* Logo */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-              style={{ background: "var(--accent-coral)", boxShadow: "var(--shadow-coral)" }}
-            >
-              <Phone className="w-5 h-5 fill-current" />
-            </div>
-            <span className="text-[22px] font-extrabold" style={{ color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
-              OpenCloser
-            </span>
-            {!localStorage.getItem("gemini_api_key") && !localStorage.getItem("openai_api_key") && !localStorage.getItem("elevenlabs_api_key") && (
-              <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full border border-amber-200 uppercase tracking-wider ml-1">
-                Demo Mode
-              </span>
-            )}
-          </div>
-
-          {/* Center Nav Pill Container */}
-          <nav className="flex items-center gap-2 px-3 py-2 bg-white rounded-full shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.state}
-                onClick={() => setAppState(item.state as any)}
-                className={`px-5 py-2.5 rounded-full text-[14px] font-semibold transition-all duration-200 ${
-                  activeNavState === item.state 
-                    ? "bg-[#1A1D20] text-white shadow-md" 
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 bg-transparent"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* Right Controls Pill */}
-          <div className="flex items-center gap-4 shrink-0">
-            {appState === "dashboard" && (
-              <button
-                onClick={isPowerDialing ? () => setIsPowerDialing(false) : startPowerDialing}
-                className={isPowerDialing ? "btn-coral rounded-full" : "btn-ghost rounded-full bg-white"}
-                style={{ fontSize: 13, padding: "9px 18px", border: "none", boxShadow: "0 2px 12px rgba(0,0,0,0.03)" }}
-              >
-                <Zap className="w-4 h-4" />
-                {isPowerDialing ? "Stop Dialer" : "Power Dial"}
-              </button>
-            )}
-
-            <div className="flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100">
-              <button className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors" onClick={() => setGlobalSearchOpen(!globalSearchOpen)} aria-label="Search leads">
-                <Search className="w-5 h-5" />
-              </button>
-              {globalSearchOpen && (
-                <input
-                  type="text"
-                  value={globalSearch}
-                  onChange={(e) => { setGlobalSearch(e.target.value); setSearchQuery(e.target.value); }}
-                  onKeyDown={(e) => { if (e.key === "Escape") { setGlobalSearchOpen(false); setGlobalSearch(""); setSearchQuery(""); } }}
-                  placeholder="Search by name or company..."
-                  className="bg-transparent border-none outline-none text-sm font-medium text-gray-900 w-48 placeholder:text-gray-400"
-                  autoFocus
-                />
-              )}
-              <button className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 opacity-50" disabled aria-label="Notifications">
-                <Bell className="w-5 h-5" />
-              </button>
-              <div className="w-[1px] h-6 bg-gray-200 mx-1"></div>
-              
-               <div className="flex items-center gap-3 pl-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity" role="button" tabIndex={0} aria-label="Profile menu">
-                <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200">
-                  <img src="https://ui-avatars.com/api/?name=Sales+Lead&background=FF5C39&color=fff&bold=true" alt="Profile" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[13px] font-bold text-gray-900 leading-tight">Sales Lead</span>
-                  <span className="text-[11px] text-gray-500 font-medium leading-tight">sales@opencloser.ai</span>
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-400 ml-1" />
-              </div>
-            </div>
-          </div>
-        </header>
-      )}
-
-      {/* ── Body: Sidebar + Main ── */}
-      <div className="flex flex-1 overflow-hidden relative">
-
-        {/* ── Icon Sidebar ── */}
-        {isAppShellVisible && (
-          <aside
-            className="flex flex-col items-center gap-4 py-8 shrink-0 relative z-40 bg-transparent"
-            style={{ width: 80 }}
-          >
-            {/* Top icons */}
-            <div className="flex flex-col items-center gap-3 flex-1 px-4">
-              {SIDEBAR_TOP.map((item) => (
-                <button
-                  key={item.state}
-                  title={item.label}
-                  onClick={() => setAppState(item.state as any)}
-                  className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${
-                    (appState === item.state || (item.state === "dashboard" && appState === "lead_detail"))
-                      ? "bg-gray-200 text-gray-900 shadow-sm"
-                      : "text-gray-400 hover:bg-gray-200 hover:text-gray-700 bg-transparent"
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 stroke-[2.5px]" />
-                </button>
-              ))}
-            </div>
-
-            {/* Bottom icons */}
-            <div className="flex flex-col items-center gap-3 px-4">
-              {/* New Campaign quick-add */}
-              <button
-                onClick={() => setAppState("hunter")}
-                className="w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer shadow-[0_4px_16px_rgba(255,92,57,0.3)] bg-[var(--accent-coral)] text-white hover:scale-105"
-                title="New Campaign"
-              >
-                <Plus className="w-6 h-6 stroke-[3px]" />
-              </button>
-              {SIDEBAR_BOTTOM.map((item) => (
-                <button
-                  key={item.state}
-                  title={item.label}
-                  onClick={() => setAppState(item.state as any)}
-                  className={`w-12 h-12 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${
-                    appState === item.state
-                      ? "bg-gray-200 text-gray-900"
-                      : "text-gray-400 hover:bg-gray-200 hover:text-gray-700 bg-transparent"
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 stroke-[2.5px]" />
-                </button>
-              ))}
-            </div>
-          </aside>
+        {appState === "icp_review" && icpData && (
+          <ICPDisplay icp={icpData} onContinue={() => setAppState("welcome")} />
         )}
 
-        {/* ── Main View ── */}
-        <main
-          className="flex-1 overflow-y-auto overflow-x-hidden"
-          style={{
-            background: ["dashboard"].includes(appState) ? "var(--bg-primary)" : "var(--bg-primary)",
-            padding: appState === "dashboard" ? "24px" : "0",
-          }}
-        >
-          {appState === "onboarding" && (
-            <Onboarding onComplete={handleOnboardingComplete} />
-          )}
-
-          {appState === "icp_review" && icpData && (
-            <ICPDisplay icp={icpData} onContinue={() => setAppState("welcome")} />
-          )}
-
-          {appState === "welcome" && (
-            <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 animate-fade-in">
-              <div className="text-center max-w-lg px-8">
-                <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-8 animate-breathe">
-                  <span className="text-5xl">🚀</span>
-                </div>
-                <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Your AI Sales Engine is Ready</h1>
-                <p className="text-lg text-gray-400 mb-3 leading-relaxed">
-                  We've analyzed your market, built your ICP, and deployed your AI sales persona.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3 mb-10">
-                  <span className="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-500/20 font-bold">✅ ICP Generated</span>
-                  <span className="text-xs bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl border border-blue-500/20 font-bold">🎯 Pipeline Seeded</span>
-                  <span className="text-xs bg-purple-500/10 text-purple-400 px-3 py-1.5 rounded-xl border border-purple-500/20 font-bold">🤖 AI Caller Ready</span>
-                </div>
-                <div className="flex gap-4 justify-center">
-                  <button
-                    onClick={() => setAppState("home")}
-                    className="px-10 py-4 bg-white text-black hover:bg-gray-200 rounded-2xl font-bold text-lg transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.4)] hover:scale-105 active:scale-95"
-                  >
-                    View Dashboard
-                  </button>
-                  <button
-                    onClick={() => setAppState("dashboard")}
-                    className="px-10 py-4 bg-white/10 text-white hover:bg-white/20 rounded-2xl font-bold text-lg transition-all border border-white/20"
-                  >
-                    Go to Pipeline
-                  </button>
-                </div>
+        {appState === "welcome" && (
+          <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 animate-fade-in">
+            <div className="text-center max-w-lg px-8">
+              <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-8 animate-breathe">
+                <span className="text-5xl">🚀</span>
+              </div>
+              <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">
+                Your AI Sales Engine is Ready
+              </h1>
+              <p className="text-lg text-gray-400 mb-3 leading-relaxed">
+                We've analyzed your market, built your ICP, and deployed your AI sales persona.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 mb-10">
+                <span className="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-500/20 font-bold">
+                  ✅ ICP Generated
+                </span>
+                <span className="text-xs bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl border border-blue-500/20 font-bold">
+                  🎯 Pipeline Seeded
+                </span>
+                <span className="text-xs bg-purple-500/10 text-purple-400 px-3 py-1.5 rounded-xl border border-purple-500/20 font-bold">
+                  🤖 AI Caller Ready
+                </span>
+              </div>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => handleWelcomeContinue("home")}
+                  className="px-10 py-4 bg-white text-black hover:bg-gray-200 rounded-2xl font-bold text-lg transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.4)] hover:scale-105 active:scale-95"
+                >
+                  View Dashboard
+                </button>
+                <button
+                  onClick={() => handleWelcomeContinue("dashboard")}
+                  className="px-10 py-4 bg-white/10 text-white hover:bg-white/20 rounded-2xl font-bold text-lg transition-all border border-white/20"
+                >
+                  Go to Pipeline
+                </button>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {appState === "audio_setup" && (
-            <AudioSetupWizard
-              onComplete={() => {
-                if (!localStorage.getItem("ai_persona")) {
-                  setAppState("persona_setup");
-                } else {
-                  setAppState("home");
-                }
-              }}
-            />
-          )}
+        {appState === "audio_setup" && (
+          <AudioSetupWizard
+            onComplete={() => {
+              if (!localStorage.getItem("ai_persona")) {
+                setAppState("persona_setup");
+              } else {
+                setAppState(consumePostAudioDestination());
+              }
+            }}
+          />
+        )}
 
-          {(appState === "persona" || appState === "persona_setup") && (
-            <Suspense fallback={<LazyFallback />}>
+        {(appState === "persona" || appState === "persona_setup") && (
+          <Suspense fallback={<LazyFallback />}>
             <AIPersonaBuilder
-              initialPersona={persona || undefined}
+              initialPersona={persona}
               onSave={(p) => {
                 setPersona(p);
-                localStorage.setItem("ai_persona", JSON.stringify(p));
                 addToast("success", "AI Persona successfully re-programmed.");
-                if (appState === "persona_setup") setAppState("home");
+                if (appState === "persona_setup") setAppState(consumePostAudioDestination());
               }}
             />
-            </Suspense>
-          )}
+          </Suspense>
+        )}
 
-          {appState === "hunter" && (
-            <LeadHunter
-              icp={icpData}
-              onLeadsAdded={() => {
-                fetchLeads();
-                setTimeout(() => setAppState("dashboard"), 2000);
-              }}
-              addToast={addToast}
-            />
-          )}
+        {appState === "hunter" && (
+          <LeadHunter
+            icp={icpData}
+            onLeadsAdded={() => {
+              leadsQuery.refetch();
+              setTimeout(() => setAppState("dashboard"), 2000);
+            }}
+            addToast={addToast}
+          />
+        )}
 
-          {appState === "call_logs" && <CallLogsView />}
+        {appState === "call_logs" && <CallLogsView />}
 
-          {appState === "settings" && <SettingsView />}
+        {appState === "settings" && <SettingsView />}
 
-          {appState === "home" && (
-            <DashboardHome
-              leads={leads}
-              callLogs={allCallLogs}
-              onViewLead={(lead) => {
-                setSelectedLead(lead);
-                setAppState("lead_detail");
-              }}
-              onDial={(lead) => setActiveCallLead(lead)}
-              onNavigate={(page) => setAppState(page as any)}
-              addToast={addToast}
-            />
-          )}
+        {appState === "home" && (
+          <DashboardHome
+            leads={leads}
+            callLogs={allCallLogs}
+            onViewLead={(lead) => {
+              setSelectedLead(lead);
+              setAppState("lead_detail");
+            }}
+            onDial={(lead) => setActiveCallLead(lead)}
+            onNavigate={(page) => setAppState(page as any)}
+            addToast={addToast}
+          />
+        )}
 
-          {appState === "dashboard" &&
-            (loading ? (
-              <div
-                className="flex items-center justify-center h-full"
-                style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontSize: 13 }}
-              >
-                Loading pipeline…
-              </div>
-            ) : (
-              <div className="flex gap-5 h-full items-start flex-col">
-                {/* Search & Filter Bar */}
-                <div className="flex items-center gap-3 w-full shrink-0">
-                  <div className="relative flex-1 max-w-xs">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
-                    <label htmlFor="pipeline-search" className="sr-only">Search leads</label>
-                    <input
-                      id="pipeline-search"
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search leads…"
-                      className="input-field"
-                      style={{ paddingLeft: 40 }}
-                    />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {[0, 70, 80, 90].map((score) => (
-                      <button
-                        key={score}
-                        onClick={() => setScoreFilter(scoreFilter === score ? 0 : score)}
-                        className="btn-ghost"
-                        style={{
-                          fontSize: 12,
-                          padding: "6px 12px",
-                          fontFamily: "var(--font-mono)",
-                          background: scoreFilter === score && score > 0 ? "var(--accent-coral-light)" : undefined,
-                          borderColor: scoreFilter === score && score > 0 ? "var(--accent-coral-medium)" : undefined,
-                          color: scoreFilter === score && score > 0 ? "var(--accent-coral)" : undefined,
-                        }}
-                      >
-                        {score === 0 ? "All" : `${score}+`}
-                      </button>
-                    ))}
-                  </div>
+        {appState === "dashboard" &&
+          (loading ? (
+            <div
+              className="flex items-center justify-center h-full"
+              style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontSize: 13 }}
+            >
+              Loading pipeline…
+            </div>
+          ) : (
+            <div className="flex gap-5 h-full items-start flex-col">
+              {/* Search & Filter Bar */}
+              <div className="flex items-center gap-3 w-full shrink-0">
+                <div className="relative flex-1 max-w-xs">
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+                    style={{ color: "var(--text-muted)" }}
+                  />
+                  <label htmlFor="pipeline-search" className="sr-only">
+                    Search leads
+                  </label>
+                  <input
+                    id="pipeline-search"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search leads…"
+                    className="input-field"
+                    style={{ paddingLeft: 40 }}
+                  />
                 </div>
-
-                <div className="flex gap-5 flex-1 items-start w-full overflow-x-auto pb-2">
-                  {COLUMNS.map((status) => (
-                    <KanbanColumn
-                      key={status}
-                      status={status}
-                      leads={leads.filter((l) => {
-                        const matchesSearch =
-                          !searchQuery ||
-                          l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          l.company.toLowerCase().includes(searchQuery.toLowerCase());
-                        const matchesScore = l.score >= scoreFilter;
-                        return l.status === status && matchesSearch && matchesScore;
-                      })}
-                      onDragStart={handleDragStart}
-                      onDrop={handleDrop}
-                      onDragOver={handleDragOver}
-                      onDial={handleDial}
-                      onViewDetails={(lead) => {
-                        setSelectedLead(lead);
-                        setAppState("lead_detail");
+                <div className="flex items-center gap-1">
+                  {[0, 70, 80, 90].map((score) => (
+                    <button
+                      key={score}
+                      onClick={() => setScoreFilter(scoreFilter === score ? 0 : score)}
+                      className="btn-ghost"
+                      style={{
+                        fontSize: 12,
+                        padding: "6px 12px",
+                        fontFamily: "var(--font-mono)",
+                        background:
+                          scoreFilter === score && score > 0
+                            ? "var(--accent-coral-light)"
+                            : undefined,
+                        borderColor:
+                          scoreFilter === score && score > 0
+                            ? "var(--accent-coral-medium)"
+                            : undefined,
+                        color:
+                          scoreFilter === score && score > 0 ? "var(--accent-coral)" : undefined,
                       }}
-                    />
+                    >
+                      {score === 0 ? "All" : `${score}+`}
+                    </button>
                   ))}
                 </div>
               </div>
-            ))}
 
-          {appState === "trainer" && (
-            <Suspense fallback={<LazyFallback />}>
+              <div className="flex gap-5 flex-1 items-start w-full overflow-x-auto pb-2">
+                {COLUMNS.map((status) => (
+                  <KanbanColumn
+                    key={status}
+                    status={status}
+                    leads={leads.filter((l) => {
+                      const matchesSearch =
+                        !searchQuery ||
+                        l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        l.company.toLowerCase().includes(searchQuery.toLowerCase());
+                      const matchesScore = l.score >= scoreFilter;
+                      return l.status === status && matchesSearch && matchesScore;
+                    })}
+                    onDragStart={handleDragStart}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDial={handleDial}
+                    onViewDetails={(lead) => {
+                      setSelectedLead(lead);
+                      setAppState("lead_detail");
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+
+        {appState === "trainer" && (
+          <Suspense fallback={<LazyFallback />}>
             <ObjectionTrainer icp={icpData} />
-            </Suspense>
-          )}
+          </Suspense>
+        )}
 
-          {appState === "lead_detail" && selectedLead && (
-            <Suspense fallback={<LazyFallback />}>
+        {appState === "lead_detail" && selectedLead && (
+          <Suspense fallback={<LazyFallback />}>
             <LeadDetailView
               lead={selectedLead}
               icp={icpData}
@@ -572,44 +439,49 @@ export function KanbanBoard() {
               }}
               onDial={(lead) => setActiveCallLead(lead)}
               onDelete={(leadId) => {
-                setLeads(leads.filter((l) => l.id !== leadId));
-                setSelectedLead(null);
-                setAppState("dashboard");
-                addToast("success", "Lead deleted successfully.");
+                deleteLeadMutation.mutate(leadId, {
+                  onSuccess: () => {
+                    setSelectedLead(null);
+                    setAppState("dashboard");
+                    addToast("success", "Lead deleted successfully.");
+                  },
+                  onError: () => addToast("error", "Failed to delete lead."),
+                });
               }}
-              onStatusChange={async (leadId, newStatus) => {
-                try {
-                  await invoke("update_lead_status", { id: leadId, status: newStatus });
-                  setLeads(leads.map((l) => (l.id === leadId ? { ...l, status: newStatus } : l)));
-                  setSelectedLead((prev) => (prev ? { ...prev, status: newStatus } : prev));
-                  addToast("success", `Lead moved to ${newStatus}.`);
-                } catch (err) {
-                  console.error("Failed to update status:", err);
-                }
+              onStatusChange={(leadId, newStatus) => {
+                updateStatusMutation.mutate(
+                  { id: leadId, status: newStatus },
+                  {
+                    onSuccess: () => {
+                      setSelectedLead((prev) => (prev ? { ...prev, status: newStatus } : prev));
+                      addToast("success", `Lead moved to ${newStatus}.`);
+                    },
+                    onError: () => addToast("error", "Failed to update lead status."),
+                  },
+                );
               }}
             />
-            </Suspense>
-          )}
-        </main>
-      </div>
+          </Suspense>
+        )}
+      </AppShell>
 
       {/* War Room Modal */}
       {activeCallLead && (
         <Suspense fallback={<LazyFallback />}>
-        <WarRoom lead={activeCallLead} icp={icpData} onClose={handleWarRoomClose} />
+          <WarRoom lead={activeCallLead} icp={icpData} onClose={handleWarRoomClose} />
         </Suspense>
       )}
 
       {/* Post-Call Debrief */}
       {debriefData && (
         <Suspense fallback={<LazyFallback />}>
-        <PostCallDebrief
-          lead={debriefData.lead}
-          icp={icpData}
-          transcript={debriefData.transcript}
-          durationSeconds={debriefData.duration}
-          onClose={() => setDebriefData(null)}
-        />
+          <PostCallDebrief
+            lead={debriefData.lead}
+            icp={icpData}
+            transcript={debriefData.transcript}
+            durationSeconds={debriefData.duration}
+            onClose={() => setDebriefData(null)}
+          />
         </Suspense>
       )}
 
@@ -619,6 +491,6 @@ export function KanbanBoard() {
           <Toast key={toast.id} toast={toast} onDismiss={removeToast} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

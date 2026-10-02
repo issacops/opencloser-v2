@@ -5,11 +5,11 @@
 
 export type ProviderId = "gemini" | "openai" | "elevenlabs";
 
-export interface VoiceOption {
+interface VoiceOption {
   id: string;
   label: string;
   gender: "male" | "female" | "neutral";
-  tone: string; // e.g. "Warm & Professional" 
+  tone: string; // e.g. "Warm & Professional"
 }
 
 export interface ProviderConfig {
@@ -28,7 +28,8 @@ export const PROVIDERS: ProviderConfig[] = [
   {
     id: "gemini",
     label: "Gemini Live",
-    description: "Google's native real-time audio model. Sub-50ms end-to-end. Best multi-speaker, zero relay needed.",
+    description:
+      "Google's native real-time audio model. Sub-50ms end-to-end. Best multi-speaker, zero relay needed.",
     model: "gemini-2.5-flash-native-audio-preview-09-2025",
     requiresRelay: false,
     apiKeyLabel: "Gemini API Key",
@@ -45,7 +46,8 @@ export const PROVIDERS: ProviderConfig[] = [
   {
     id: "openai",
     label: "OpenAI Realtime",
-    description: "GPT-4o Realtime API with natural emotion and interruption handling. Requires server relay.",
+    description:
+      "GPT-4o Realtime API with natural emotion and interruption handling. Requires server relay.",
     model: "gpt-4o-realtime-preview",
     requiresRelay: true,
     apiKeyLabel: "OpenAI API Key",
@@ -62,7 +64,8 @@ export const PROVIDERS: ProviderConfig[] = [
   {
     id: "elevenlabs",
     label: "ElevenLabs ConvAI",
-    description: "Most human-sounding voice synthesis. Best emotional range. Requires agent ID + API key.",
+    description:
+      "Most human-sounding voice synthesis. Best emotional range. Requires agent ID + API key.",
     model: "elevenlabs-conversational-v1",
     requiresRelay: true,
     apiKeyLabel: "ElevenLabs API Key",
@@ -73,7 +76,12 @@ export const PROVIDERS: ProviderConfig[] = [
     voices: [
       { id: "21m00Tcm4TlvDq8ikWAM", label: "Rachel", gender: "female", tone: "Warm & Engaging" },
       { id: "AZnzlk1XvdvUeBnXmlld", label: "Domi", gender: "female", tone: "Strong & Confident" },
-      { id: "EXAVITQu4vr4xnSDxMaL", label: "Bella", gender: "female", tone: "Soothing Professional" },
+      {
+        id: "EXAVITQu4vr4xnSDxMaL",
+        label: "Bella",
+        gender: "female",
+        tone: "Soothing Professional",
+      },
       { id: "ErXwobaYiN019PkySvjV", label: "Antoni", gender: "male", tone: "Friendly & Upbeat" },
       { id: "MF3mGyEYCl7XYWbV9V6O", label: "Elli", gender: "female", tone: "Bright & Clear" },
       { id: "TxGEqnHWrfWFTfGW9XjX", label: "Josh", gender: "male", tone: "Deep & Direct" },

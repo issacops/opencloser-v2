@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Search, MapPin, Filter, Play, Loader2, Database } from "lucide-react";
-import { invoke } from "@tauri-apps/api/core";
 import { ICP } from "../../../types";
 import { ToastType } from "../../../ui/components/Toast";
+import { simulateLeadScraping, type LeadResult } from "../../../services/ai.service";
+import { useAddLeadsMutation } from "../../../services/queries";
+import { isDemoMode } from "../../../services/apiKey";
 
 interface LeadHunterProps {
   icp: ICP | null;
@@ -14,7 +16,8 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [isScraping, setIsScraping] = useState(false);
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<LeadResult[]>([]);
+  const addLeadsMutation = useAddLeadsMutation();
 
   const handleScrape = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,39 +27,39 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
     setResults([]);
 
     try {
-      const leads: any = await invoke('simulate_lead_scraping', { query, location, icp });
-      
-      const formattedLeads = leads.map((lead: any) => ({
+      const leads = await simulateLeadScraping(query, location, icp);
+
+      const formattedLeads = leads.map((lead) => ({
         id: `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         name: lead.name,
         company: lead.company,
         phone: lead.phone,
-        score: lead.score
+        score: lead.score,
       }));
 
-      const addedCount: number = await invoke('add_leads', { leads: formattedLeads });
+      const addedCount = await addLeadsMutation.mutateAsync(formattedLeads);
 
       setResults(leads);
       if (addedCount > 0) {
         addToast(
           "success",
-          `Successfully extracted and saved ${addedCount} new high-intent leads.`
+          `Generated and saved ${addedCount} new lead${addedCount !== 1 ? "s" : ""}.`,
         );
       }
-      
+
       const skippedCount = leads.length - addedCount;
       if (skippedCount > 0) {
         addToast(
           "warning",
-          `Skipped ${skippedCount} duplicate lead${skippedCount !== 1 ? 's' : ''} that already existed in your CRM.`
+          `Skipped ${skippedCount} duplicate lead${skippedCount !== 1 ? "s" : ""} that already existed in your CRM.`,
         );
       }
       onLeadsAdded(); // Trigger a refresh of the Kanban board
     } catch (error) {
-      console.error("Failed to scrape leads:", error);
+      console.error("Failed to generate leads:", error);
       addToast(
         "error",
-        "Failed to extract leads. Please check your connection and try again."
+        `Lead generation failed: ${typeof error === "string" ? error : "unknown error. Check your Gemini key in Settings."}`,
       );
     } finally {
       setIsScraping(false);
@@ -66,7 +69,6 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto w-full px-4 md:px-8 py-8 transition-all">
       <div className="flex flex-col h-full w-full bg-white rounded-[24px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#F0F0F0] relative z-10 transition-all">
-        
         {/* Header */}
         <div className="px-8 py-6 border-b border-[#F0F0F0] bg-white flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -74,11 +76,9 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
               <Search className="w-6 h-6 text-[#FF5C39]" />
             </div>
             <div>
-              <h2 className="text-[18px] font-bold text-[#171717] tracking-tight">
-                Lead Hunter
-              </h2>
+              <h2 className="text-[18px] font-bold text-[#171717] tracking-tight">Lead Hunter</h2>
               <p className="text-[13px] text-[#A1A1AA] font-semibold mt-0.5">
-                Autonomous Directory Extraction Engine
+                AI Lead Generation Engine
               </p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
               {isScraping ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Extracting...
+                  Generating...
                 </>
               ) : (
                 <>
@@ -144,13 +144,11 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
                 <Database className="w-5 h-5 text-[#A1A1AA]" />
               </div>
               <div className="flex flex-col justify-center h-10">
-                <div className="text-[13px] font-bold text-[#171717] mb-0.5">
-                  Targeting Context
-                </div>
+                <div className="text-[13px] font-bold text-[#171717] mb-0.5">Targeting Context</div>
                 <div className="text-[12px] text-[#6B7280] font-medium leading-relaxed">
                   The extraction engine prioritizes leads matching:{" "}
-                  <span className="text-[#FF5C39] font-bold">{icp.targetAudience}</span>.
-                  Results will be auto-scored based on relevance.
+                  <span className="text-[#FF5C39] font-bold">{icp.targetAudience}</span>. Results
+                  will be auto-scored based on relevance.
                 </div>
               </div>
             </div>
@@ -166,18 +164,18 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
                 <div className="absolute inset-0 border-[3px] border-[#FF5C39] rounded-full border-t-transparent animate-spin"></div>
               </div>
               <div className="font-mono text-[13px] font-bold animate-pulse text-[#1A1D20]">
-                Bypassing anti-bot defenses...
+                {isDemoMode() ? "Generating demo leads..." : "Asking Gemini for matching leads..."}
               </div>
               <div className="text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-widest">
-                Simulating Puppeteer stealth extraction
+                {isDemoMode()
+                  ? "No API key configured — results are sample data"
+                  : "AI-generated leads scored against your ICP"}
               </div>
             </div>
           ) : results.length > 0 ? (
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[16px] font-bold text-[#171717]">
-                  Extraction Complete
-                </h3>
+                <h3 className="text-[16px] font-bold text-[#171717]">Generation Complete</h3>
                 <span className="text-[12px] font-bold text-[#10B981] bg-[#ECFDF5] px-3 py-1.5 rounded-full border border-[#10B981]/20">
                   {results.length} Leads Added to CRM
                 </span>
@@ -211,7 +209,9 @@ export function LeadHunter({ icp, onLeadsAdded, addToast }: LeadHunterProps) {
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-[#A1A1AA]">
               <Search className="w-12 h-12 mb-4 opacity-20" />
-              <p className="font-semibold text-[14px]">Enter a query and location to begin extraction.</p>
+              <p className="font-semibold text-[14px]">
+                Enter a query and location to generate leads.
+              </p>
             </div>
           )}
         </div>

@@ -49,3 +49,6 @@ data/
 *.db
 *.db-shm
 *.db-wal
+
+# HyperFrames video projects
+videos/

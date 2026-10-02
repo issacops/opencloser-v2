@@ -21,11 +21,30 @@ pub fn init(app_handle: &AppHandle) {
         PRAGMA journal_mode = WAL;
         PRAGMA synchronous = NORMAL;
         PRAGMA foreign_keys = ON;
+        PRAGMA busy_timeout = 5000;
         ",
     )
     .expect("Failed to set pragmas");
 
     // Initialize Schema
+    create_schema(&conn);
+
+    // Run migrations for existing databases
+    run_migrations(&conn);
+
+    // Seed data if empty
+    let count: i32 = conn
+        .query_row("SELECT COUNT(*) FROM leads", [], |row| row.get(0))
+        .unwrap_or(0);
+
+    if count == 0 {
+        seed_data(&conn);
+    } else {
+        info!("Database already seeded with {} leads.", count);
+    }
+}
+
+pub(crate) fn create_schema(conn: &Connection) {
     conn.execute_batch(
         "
         CREATE TABLE IF NOT EXISTS leads (
@@ -85,23 +104,14 @@ pub fn init(app_handle: &AppHandle) {
             duration INTEGER DEFAULT 0,
             FOREIGN KEY(lead_id) REFERENCES leads(id) ON DELETE CASCADE
         );
+        
+        CREATE INDEX IF NOT EXISTS idx_call_logs_lead_id ON call_logs(lead_id);
+        CREATE INDEX IF NOT EXISTS idx_call_logs_created_at ON call_logs(created_at DESC);
+        CREATE INDEX IF NOT EXISTS idx_lead_notes_lead_id ON lead_notes(lead_id);
+        CREATE INDEX IF NOT EXISTS idx_activities_lead_id ON activities(lead_id);
         ",
     )
     .expect("Failed to create database schema");
-
-    // Run migrations for existing databases
-    run_migrations(&conn);
-
-    // Seed data if empty
-    let count: i32 = conn
-        .query_row("SELECT COUNT(*) FROM leads", [], |row| row.get(0))
-        .unwrap_or(0);
-
-    if count == 0 {
-        seed_data(&conn);
-    } else {
-        info!("Database already seeded with {} leads.", count);
-    }
 }
 
 fn run_migrations(conn: &Connection) {
@@ -134,17 +144,118 @@ fn seed_data(conn: &Connection) {
     info!("Seeding initial demo data...");
 
     // Seed 10 leads with realistic data
+    #[allow(clippy::type_complexity)]
     const SEED_LEADS: &[(&str, &str, &str, &str, &str, &str, &str, &str, i32)] = &[
-        ("lead_1", "Sarah Jenkins", "Acme Heavy Industries", "+1 (512) 555-0101", "sarah@acmeheavy.com", "VP of Operations", "Construction & Engineering", "Discovery", 85),
-        ("lead_2", "Marcus Chen", "TechBridge Infrastructure", "+1 (415) 555-0102", "m.chen@techbridge.io", "CTO", "Technology", "Discovery", 92),
-        ("lead_3", "Elena Rodriguez", "Global Logistics Partners", "+1 (713) 555-0103", "erodriguez@globalogistics.com", "Director of Procurement", "Logistics", "Outbound Call", 78),
-        ("lead_4", "David Kim", "Apex Financial Services", "+1 (212) 555-0104", "dkim@apexfin.com", "CEO", "Financial Services", "Audit Requested", 95),
-        ("lead_5", "Rachel Torres", "MetroBuild Contractors", "+1 (512) 555-0105", "rtorres@metrobuild.com", "Director of Risk Management", "Construction", "Discovery", 88),
-        ("lead_6", "James O'Brien", "Pacific Trade Group", "+1 (503) 555-0106", "jobrien@pacifictrade.com", "VP of Supply Chain", "Import/Export", "Outbound Call", 82),
-        ("lead_7", "Priya Sharma", "NovaTech Solutions", "+1 (650) 555-0107", "psharma@novatech.io", "Head of Engineering", "Technology", "Audit Requested", 91),
-        ("lead_8", "Michael Chang", "East-West Manufacturing", "+1 (626) 555-0108", "mchang@eastwestmfg.com", "COO", "Manufacturing", "Discovery", 76),
-        ("lead_9", "Alex Thompson", "Standard Industrial Corp", "+1 (312) 555-0109", "athompson@standardindustrial.com", "CEO", "Industrial", "Closed", 98),
-        ("lead_10", "Lisa Park", "Summit Risk Advisors", "+1 (720) 555-0110", "lpark@summitrisk.com", "VP of Business Development", "Insurance", "Outbound Call", 84),
+        (
+            "lead_1",
+            "Sarah Jenkins",
+            "Acme Heavy Industries",
+            "+1 (512) 555-0101",
+            "sarah@acmeheavy.com",
+            "VP of Operations",
+            "Construction & Engineering",
+            "Discovery",
+            85,
+        ),
+        (
+            "lead_2",
+            "Marcus Chen",
+            "TechBridge Infrastructure",
+            "+1 (415) 555-0102",
+            "m.chen@techbridge.io",
+            "CTO",
+            "Technology",
+            "Discovery",
+            92,
+        ),
+        (
+            "lead_3",
+            "Elena Rodriguez",
+            "Global Logistics Partners",
+            "+1 (713) 555-0103",
+            "erodriguez@globalogistics.com",
+            "Director of Procurement",
+            "Logistics",
+            "Outbound Call",
+            78,
+        ),
+        (
+            "lead_4",
+            "David Kim",
+            "Apex Financial Services",
+            "+1 (212) 555-0104",
+            "dkim@apexfin.com",
+            "CEO",
+            "Financial Services",
+            "Audit Requested",
+            95,
+        ),
+        (
+            "lead_5",
+            "Rachel Torres",
+            "MetroBuild Contractors",
+            "+1 (512) 555-0105",
+            "rtorres@metrobuild.com",
+            "Director of Risk Management",
+            "Construction",
+            "Discovery",
+            88,
+        ),
+        (
+            "lead_6",
+            "James O'Brien",
+            "Pacific Trade Group",
+            "+1 (503) 555-0106",
+            "jobrien@pacifictrade.com",
+            "VP of Supply Chain",
+            "Import/Export",
+            "Outbound Call",
+            82,
+        ),
+        (
+            "lead_7",
+            "Priya Sharma",
+            "NovaTech Solutions",
+            "+1 (650) 555-0107",
+            "psharma@novatech.io",
+            "Head of Engineering",
+            "Technology",
+            "Audit Requested",
+            91,
+        ),
+        (
+            "lead_8",
+            "Michael Chang",
+            "East-West Manufacturing",
+            "+1 (626) 555-0108",
+            "mchang@eastwestmfg.com",
+            "COO",
+            "Manufacturing",
+            "Discovery",
+            76,
+        ),
+        (
+            "lead_9",
+            "Alex Thompson",
+            "Standard Industrial Corp",
+            "+1 (312) 555-0109",
+            "athompson@standardindustrial.com",
+            "CEO",
+            "Industrial",
+            "Closed",
+            98,
+        ),
+        (
+            "lead_10",
+            "Lisa Park",
+            "Summit Risk Advisors",
+            "+1 (720) 555-0110",
+            "lpark@summitrisk.com",
+            "VP of Business Development",
+            "Insurance",
+            "Outbound Call",
+            84,
+        ),
     ];
 
     for (id, name, company, phone, email, title, industry, status, score) in SEED_LEADS {
@@ -208,4 +319,70 @@ fn seed_data(conn: &Connection) {
     ).ok();
 
     info!("Demo seed data complete: 10 leads, 3 call logs, 1 lead note.");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn memory_conn() -> Connection {
+        let conn = Connection::open_in_memory().expect("open in-memory db");
+        conn.execute_batch("PRAGMA foreign_keys = ON;")
+            .expect("pragma");
+        create_schema(&conn);
+        conn
+    }
+
+    #[test]
+    fn schema_creates_all_tables_and_indexes() {
+        let conn = memory_conn();
+        let mut stmt = conn
+            .prepare(
+                "SELECT name FROM sqlite_master WHERE type = 'table' AND name IN \
+                 ('leads', 'call_logs', 'campaigns', 'lead_notes', 'activities')",
+            )
+            .unwrap();
+        let tables: Vec<String> = stmt
+            .query_map([], |r| r.get(0))
+            .unwrap()
+            .collect::<rusqlite::Result<_>>()
+            .unwrap();
+        assert_eq!(tables.len(), 5);
+
+        let mut stmt = conn
+            .prepare(
+                "SELECT name FROM sqlite_master WHERE type = 'index' AND name IN \
+                 ('idx_call_logs_lead_id', 'idx_call_logs_created_at', \
+                  'idx_lead_notes_lead_id', 'idx_activities_lead_id')",
+            )
+            .unwrap();
+        let indexes: Vec<String> = stmt
+            .query_map([], |r| r.get(0))
+            .unwrap()
+            .collect::<rusqlite::Result<_>>()
+            .unwrap();
+        assert_eq!(indexes.len(), 4);
+    }
+
+    #[test]
+    fn schema_and_migrations_are_idempotent() {
+        let conn = memory_conn();
+        run_migrations(&conn);
+        run_migrations(&conn);
+        create_schema(&conn);
+    }
+
+    #[test]
+    fn seed_fills_an_empty_database() {
+        let conn = memory_conn();
+        seed_data(&conn);
+        let leads: i32 = conn
+            .query_row("SELECT COUNT(*) FROM leads", [], |r| r.get(0))
+            .unwrap();
+        let calls: i32 = conn
+            .query_row("SELECT COUNT(*) FROM call_logs", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(leads, 10);
+        assert_eq!(calls, 3);
+    }
 }

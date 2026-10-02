@@ -1,29 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Bot, Send, User, Sparkles } from "lucide-react";
-import { invoke } from "@tauri-apps/api/core";
 import { ICP } from "../../../types";
-
-interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-}
+import { processOnboardingChat } from "../../../services/onboarding.service";
+import { useOnboardingStore } from "../../../stores/onboarding.store";
 
 interface OnboardingProps {
   onComplete: (icp: ICP) => void;
 }
 
 export function Onboarding({ onComplete }: OnboardingProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content:
-        "Welcome to OpenCloser. I'm your AI Sales Architect. To engineer your bespoke Ideal Customer Profile (ICP) and prime your dialing agent with the SPIN/Challenger methodology, I need to understand your ecosystem. What exactly does your company do, and who is your most lucrative customer?",
-    },
-  ]);
+  const messages = useOnboardingStore((s) => s.messages);
+  const isLoading = useOnboardingStore((s) => s.isLoading);
+  const addMessage = useOnboardingStore((s) => s.addMessage);
+  const setIsLoading = useOnboardingStore((s) => s.setIsLoading);
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -38,49 +28,42 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage = {
       id: Date.now().toString(),
-      role: "user",
+      role: "user" as const,
       content: input.trim(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    addMessage(userMessage);
     setInput("");
     setIsLoading(true);
 
     try {
-      const data: any = await invoke('process_onboarding_chat', {
-        messages: [...messages, userMessage].map((m) => ({
+      const data = await processOnboardingChat(
+        [...messages, userMessage].map((m) => ({
           role: m.role,
           content: m.content,
         })),
-      });
+      );
 
       if (data.isComplete && data.icp) {
         // AI has enough information
         onComplete(data.icp);
       } else {
         // AI needs more information
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            role: "assistant",
-            content: data.reply,
-          },
-        ]);
+        addMessage({
+          id: Date.now().toString(),
+          role: "assistant",
+          content: data.reply || "Could you tell me more about your ideal customer?",
+        });
       }
     } catch (error) {
       console.error("Failed to send message:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: "assistant",
-          content:
-            "Connection to intelligence core disrupted. Please re-transmit.",
-        },
-      ]);
+      addMessage({
+        id: Date.now().toString(),
+        role: "assistant",
+        content: `Request failed — nothing was generated. ${typeof error === "string" ? error : "Check your Gemini key in Settings, then try again."}`,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -98,8 +81,10 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           </div>
           <div>
             <h2 className="text-[18px] font-bold text-[#171717] tracking-tight flex items-center gap-2">
-              Strategic Intelligence Core 
-              <span className="text-[10px] font-bold bg-[#ECFDF5] text-[#10B981] px-2.5 py-1 rounded-full uppercase tracking-wider">Active</span>
+              Strategic Intelligence Core
+              <span className="text-[10px] font-bold bg-[#ECFDF5] text-[#10B981] px-2.5 py-1 rounded-full uppercase tracking-wider">
+                Active
+              </span>
             </h2>
             <p className="text-[13px] text-[#A1A1AA] font-semibold mt-0.5">
               Engineering ICP & Sales Vector
@@ -115,10 +100,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               className={`flex gap-4 animate-scale-in max-w-[85%] ${msg.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"}`}
             >
               <div
-                className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${msg.role === "user"
-                  ? "bg-[#1A1D20] text-white shadow-md"
-                  : "bg-white text-[#FF5C39] border border-[#FFD4CC] shadow-sm"
-                  }`}
+                className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                  msg.role === "user"
+                    ? "bg-[#1A1D20] text-white shadow-md"
+                    : "bg-white text-[#FF5C39] border border-[#FFD4CC] shadow-sm"
+                }`}
               >
                 {msg.role === "user" ? (
                   <User className="w-5 h-5 stroke-[2.5px]" />
@@ -128,10 +114,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               </div>
 
               <div
-                className={`rounded-[20px] px-6 py-4 text-[14px] leading-relaxed relative ${msg.role === "user"
-                  ? "bg-[#1A1D20] text-white rounded-tr-sm shadow-[0_4px_16px_rgba(26,29,32,0.1)]"
-                  : "bg-white text-[#171717] border border-[#F0F0F0] rounded-tl-sm shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
-                  }`}
+                className={`rounded-[20px] px-6 py-4 text-[14px] leading-relaxed relative ${
+                  msg.role === "user"
+                    ? "bg-[#1A1D20] text-white rounded-tr-sm shadow-[0_4px_16px_rgba(26,29,32,0.1)]"
+                    : "bg-white text-[#171717] border border-[#F0F0F0] rounded-tl-sm shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
+                }`}
               >
                 {msg.content}
               </div>
@@ -143,9 +130,18 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 <Bot className="w-5 h-5 stroke-[2.5px]" />
               </div>
               <div className="bg-white border border-[#F0F0F0] rounded-[20px] rounded-tl-sm px-6 py-5 flex items-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-                <div className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                <div className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                <div className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                <div
+                  className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-[#FFD4CC] rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                ></div>
               </div>
             </div>
           )}

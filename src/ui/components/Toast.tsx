@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { CheckCircle, XCircle, X } from "lucide-react";
 
 export type ToastType = "success" | "error" | "info" | "warning";
@@ -10,7 +10,6 @@ export interface ToastMessage {
 }
 
 interface ToastProps {
-  key?: React.Key;
   toast: ToastMessage;
   onDismiss: (id: string) => void;
 }

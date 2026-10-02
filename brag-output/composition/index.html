@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0a0a0a;
+        font-family: -apple-system, "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+      .clip { position: absolute; }
+      .mono { font-family: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+      /* ---------- shared ---------- */
+      #bg { left: 0; top: 0; width: 1920px; height: 1080px; background: #0a0a0a; }
+      #hero-glow {
+        left: 160px; top: 90px; width: 1600px; height: 900px; opacity: 0.2;
+        background: radial-gradient(ellipse at center, rgba(255,92,57,0.28) 0%, rgba(99,102,241,0.12) 45%, rgba(0,0,0,0) 70%);
+      }
+      /* ---------- scene 1: hook ---------- */
+      #hook-1 {
+        left: 0; top: 430px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 64px; font-weight: 600; letter-spacing: -0.02em;
+      }
+      #hook-2 {
+        left: 0; top: 540px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 120px; font-weight: 800; letter-spacing: -0.03em;
+      }
+      #hook-2 .zero { color: #FF5C39; }
+      /* ---------- scene 2: wordmark ---------- */
+      #wm {
+        left: 0; top: 380px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 190px; font-weight: 800; letter-spacing: -0.04em;
+      }
+      #wm .wl { display: inline-block; }
+      #wm-tag {
+        left: 0; top: 620px; width: 1920px; text-align: center;
+        color: #c7ccd5; font-size: 30px; letter-spacing: 0.42em;
+      }
+      #wm-tag .spike { color: #ff8a6b; }
+      #dash-ghost {
+        left: 360px; top: 130px; width: 1200px; height: 717px; opacity: 0;
+        border-radius: 18px; border: 1px solid rgba(255,255,255,0.14);
+      }
+      /* ---------- scene 3: flow ---------- */
+      #flow-win {
+        left: 340px; top: 150px; width: 1240px; height: 741px;
+        border-radius: 18px; border: 1px solid rgba(255,255,255,0.16);
+        box-shadow: 0 30px 120px rgba(0,0,0,0.6);
+      }
+      #flow-kicker {
+        left: 0; top: 84px; width: 1920px; text-align: center;
+        color: #9ca3af; font-size: 26px; letter-spacing: 0.4em;
+      }
+      #flow-kicker .spike { color: #FF5C39; }
+      #cursor {
+        left: 0; top: 0; width: 34px; height: 34px; opacity: 0;
+      }
+      #cursor .dot {
+        position: absolute; left: 4px; top: 4px; width: 18px; height: 18px; border-radius: 50%;
+        background: #FF5C39; border: 3px solid #fff;
+        box-shadow: 0 0 18px rgba(255,92,57,0.9);
+      }
+      .pulse {
+        left: 0; top: 0; width: 90px; height: 90px; border-radius: 50%;
+        border: 4px solid #FF5C39; opacity: 0;
+      }
+      #coach-tip {
+        left: 120px; top: 640px; width: 520px; padding: 26px 30px;
+        background: rgba(20,20,20,0.94); border: 1px solid rgba(255,92,57,0.55); border-radius: 14px;
+        color: #e5e5e5; opacity: 0;
+      }
+      #coach-tip .k { color: #FF5C39; font-size: 22px; letter-spacing: 0.3em; margin-bottom: 10px; }
+      #coach-tip .t { font-size: 30px; font-weight: 600; line-height: 1.3; }
+      #live-badge {
+        left: 340px; top: 96px; padding: 10px 22px; border-radius: 999px;
+        background: #FF5C39; color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 0.2em; opacity: 0;
+      }
+      /* ---------- scene 4: stats ---------- */
+      .stat {
+        top: 380px; width: 440px; padding: 56px 0 48px; text-align: center;
+        background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
+        opacity: 0;
+      }
+      .stat .n { color: #e5e5e5; font-size: 110px; font-weight: 800; letter-spacing: -0.03em; }
+      .stat .l { color: #9ca3af; font-size: 28px; letter-spacing: 0.32em; margin-top: 12px; }
+      #stat-1 { left: 200px; }
+      #stat-2 { left: 740px; }
+      #stat-3 { left: 1280px; }
+      #stat-3 .n { color: #FF5C39; }
+      /* ---------- scene 5: outro ---------- */
+      #out-lock {
+        left: 0; top: 360px; width: 1920px; text-align: center;
+        color: #e5e5e5; font-size: 160px; font-weight: 800; letter-spacing: -0.035em;
+      }
+      #out-sub {
+        left: 0; top: 580px; width: 1920px; text-align: center;
+        color: #9ca3af; font-size: 44px; font-weight: 500;
+      }
+      #out-url {
+        left: 560px; top: 700px; width: 800px; text-align: center;
+        color: #0a0a0a; background: #FF5C39; font-size: 40px; font-weight: 700;
+        padding: 20px 0; border-radius: 14px;
+      }
+      #fade { left: 0; top: 0; width: 1920px; height: 1080px; background: #000; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root" data-composition-id="main" data-start="0" data-duration="21"
+      data-width="1920" data-height="1080"
+    >
+      <div id="bg" class="clip" data-start="0" data-duration="21" data-track-index="0"></div>
+      <div id="hero-glow" class="clip" data-start="3" data-duration="18" data-track-index="0"></div>
+
+      <audio id="music" data-start="0" data-duration="21" data-track-index="10" data-volume="0.35" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+      <!-- Scene 1: hook 0-3 -->
+      <div id="hook-1" class="clip" data-start="0.2" data-duration="2.8" data-track-index="1">SDR software costs $1,000/month.</div>
+      <div id="hook-2" class="clip" data-start="1.5" data-duration="1.5" data-track-index="2">Ours costs <span class="zero">$0.</span></div>
+      <audio id="sfx-impact-1" data-start="1.4" data-duration="1" data-track-index="11" data-volume="0.8" src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+
+      <!-- Scene 2: wordmark 3-7 -->
+      <div id="wm" class="clip" data-start="3.2" data-duration="3.8" data-track-index="1"><span class="wl">O</span><span class="wl">p</span><span class="wl">e</span><span class="wl">n</span><span class="wl">C</span><span class="wl">l</span><span class="wl">o</span><span class="wl">s</span><span class="wl">e</span><span class="wl">r</span></div>
+      <div id="wm-tag" class="clip mono" data-start="4.2" data-duration="2.8" data-track-index="2"><span class="spike">✱</span> THE OPEN SOURCE AI SDR</div>
+      <img id="dash-ghost" class="clip" data-start="3.6" data-duration="3.4" data-track-index="0" src="assets/img/opencloser-dashboard-home.webp" alt="" />
+      <audio id="sfx-bell-1" data-start="4.0" data-duration="2" data-track-index="12" data-volume="0.75" src="assets/sfx/impact/impactBell_heavy_000.ogg"></audio>
+
+      <!-- Scene 3: flow 7-15 -->
+      <div id="flow-kicker" class="clip mono" data-start="7.0" data-duration="8.0" data-track-index="1"><span class="spike">✱</span> WATCH IT SELL</div>
+      <img id="flow-win-pipe" class="clip" data-start="7.0" data-duration="1.1" data-track-index="2" src="assets/img/opencloser-pipeline-kanban.webp" alt="" style="left:340px;top:150px;width:1240px;height:741px;border-radius:18px;border:1px solid rgba(255,255,255,0.16);" />
+      <img id="flow-win-lead" class="clip" data-start="8.1" data-duration="1.15" data-track-index="2" src="assets/img/opencloser-lead-detail.webp" alt="" style="left:340px;top:150px;width:1240px;height:741px;border-radius:18px;border:1px solid rgba(255,255,255,0.16);" />
+      <img id="flow-win-war" class="clip" data-start="9.25" data-duration="5.75" data-track-index="2" src="assets/img/opencloser-war-room-ai-cold-calling.webp" alt="" style="left:340px;top:150px;width:1240px;height:741px;border-radius:18px;border:1px solid rgba(255,255,255,0.16);" />
+      <div id="cursor" class="clip" data-start="7.2" data-duration="1.9" data-track-index="3"><div class="dot"></div></div>
+      <div id="pulse-1" class="pulse clip" data-start="7.9" data-duration="0.5" data-track-index="4"></div>
+      <div id="pulse-2" class="pulse clip" data-start="9.0" data-duration="0.5" data-track-index="4"></div>
+      <div id="live-badge" class="clip mono" data-start="9.25" data-duration="5.75" data-track-index="3">● LIVE CALL</div>
+      <div id="coach-tip" class="clip" data-start="10.0" data-duration="5.0" data-track-index="3">
+        <div class="k mono">✱ LIVE COACHING</div>
+        <div class="t">SPIN situation tip: ask about their current process.</div>
+      </div>
+      <audio id="sfx-click-1" data-start="7.9" data-duration="0.5" data-track-index="13" data-volume="0.8" src="assets/sfx/ui/mouseclick1.ogg"></audio>
+      <audio id="sfx-click-2" data-start="9.0" data-duration="0.5" data-track-index="14" data-volume="0.8" src="assets/sfx/ui/mouseclick1.ogg"></audio>
+      <audio id="sfx-drop-1" data-start="10.0" data-duration="1" data-track-index="15" data-volume="0.65" src="assets/sfx/interface/drop_001.ogg"></audio>
+
+      <!-- Scene 4: stats 15-18 -->
+      <div id="stat-1" class="stat clip" data-start="15.3" data-duration="2.7" data-track-index="1"><div class="n">5</div><div class="l mono">AI AGENTS</div></div>
+      <div id="stat-2" class="stat clip" data-start="15.85" data-duration="2.15" data-track-index="2"><div class="n">100%</div><div class="l mono">LOCAL</div></div>
+      <div id="stat-3" class="stat clip" data-start="16.4" data-duration="1.6" data-track-index="3"><div class="n">$0</div><div class="l mono">FOREVER</div></div>
+      <audio id="sfx-card-1" data-start="15.3" data-duration="0.6" data-track-index="16" data-volume="0.7" src="assets/sfx/casino/card-place-1.ogg"></audio>
+      <audio id="sfx-card-2" data-start="15.85" data-duration="0.6" data-track-index="17" data-volume="0.7" src="assets/sfx/casino/card-place-2.ogg"></audio>
+      <audio id="sfx-card-3" data-start="16.4" data-duration="0.6" data-track-index="18" data-volume="0.75" src="assets/sfx/casino/card-place-3.ogg"></audio>
+
+      <!-- Scene 5: outro 18-21 -->
+      <div id="out-lock" class="clip" data-start="18.6" data-duration="2.4" data-track-index="1">OpenCloser.</div>
+      <div id="out-sub" class="clip" data-start="19.1" data-duration="1.9" data-track-index="2">Download free.</div>
+      <div id="out-url" class="clip mono" data-start="19.4" data-duration="1.6" data-track-index="3">github.com/issacops/opencloser</div>
+      <audio id="sfx-bell-2" data-start="18.6" data-duration="2.4" data-track-index="19" data-volume="0.8" src="assets/sfx/impact/impactBell_heavy_004.ogg"></audio>
+      <div id="fade" class="clip" data-start="20.6" data-duration="0.4" data-track-index="9"></div>
+    </div>
+    <script>
+      // RMS curve (per-0.5s mean, 0-21s) baked from the music bed — deterministic.
+      var RMS42 = [0.253,0.173,0.146,0.24,0.2,0.178,0.218,0.207,0.226,0.222,0.162,0.172,0.199,0.218,0.212,0.163,0.228,0.325,0.338,0.347,0.36,0.375,0.336,0.331,0.362,0.355,0.367,0.329,0.347,0.345,0.412,0.359,0.41,0.381,0.329,0.327,0.299,0.389,0.449,0.451,0.339,0.457];
+      var glow = document.getElementById("hero-glow");
+      var music = document.getElementById("music");
+      var tl = gsap.timeline({ paused: true });
+      tl.eventCallback("onUpdate", function () {
+        var t = tl.time();
+        var idx = Math.min(41, Math.max(0, Math.floor(t * 2)));
+        glow.style.opacity = (0.12 + 0.55 * RMS42[idx]).toFixed(3);
+      });
+      // Scene 1: hook slams
+      tl.fromTo("#hook-1", { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 0.2);
+      tl.fromTo("#hook-2", { opacity: 0, scale: 1.18 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 1.5);
+      tl.to("#hook-1, #hook-2", { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.8);
+      // Scene 2: wordmark cascade
+      tl.fromTo("#wm .wl", { opacity: 0, y: 90 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.06 }, 3.2);
+      tl.fromTo("#dash-ghost", { opacity: 0, scale: 1.06 }, { opacity: 0.35, scale: 1, duration: 1.2, ease: "power2.out" }, 3.6);
+      tl.fromTo("#wm-tag", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 4.2);
+      tl.to("#wm, #wm-tag, #dash-ghost", { opacity: 0, duration: 0.3, ease: "power2.in" }, 6.7);
+      // Scene 3: flow
+      tl.fromTo("#flow-kicker", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 7.0);
+      tl.fromTo("#flow-win-pipe", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 7.0);
+      tl.fromTo("#cursor", { opacity: 0, x: 420, y: 700 }, { opacity: 1, x: 620, y: 480, duration: 0.7, ease: "power2.inOut" }, 7.2);
+      tl.fromTo("#pulse-1", { opacity: 0.9, scale: 0.3, x: 575, y: 435 }, { opacity: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 7.9);
+      tl.to("#flow-win-pipe", { opacity: 0, duration: 0.15 }, 8.0);
+      tl.fromTo("#flow-win-lead", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 8.1);
+      tl.to("#cursor", { x: 1380, y: 455, duration: 0.6, ease: "power2.inOut" }, 8.3);
+      tl.fromTo("#pulse-2", { opacity: 0.9, scale: 0.3, x: 1335, y: 410 }, { opacity: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 9.0);
+      // beat-locked: War Room reveal at 9.25s (strong cue 9.29s)
+      tl.to("#flow-win-lead", { opacity: 0, duration: 0.1 }, 9.2);
+      tl.fromTo("#flow-win-war", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 9.25);
+      tl.fromTo("#live-badge", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 9.4);
+      tl.to("#cursor", { opacity: 0, duration: 0.3 }, 9.5);
+      tl.fromTo("#coach-tip", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 10.0);
+      tl.to("#flow-kicker, #flow-win-war, #live-badge, #coach-tip", { opacity: 0, duration: 0.3, ease: "power2.in" }, 14.7);
+      // Scene 4: stat volley (card 2 beat-locked to 15.84s strong cue)
+      tl.fromTo("#stat-1", { opacity: 0, y: 70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power3.out" }, 15.3);
+      tl.fromTo("#stat-2", { opacity: 0, y: 70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power3.out" }, 15.85);
+      tl.fromTo("#stat-3", { opacity: 0, y: 70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power3.out" }, 16.4);
+      tl.to("#stat-1, #stat-2, #stat-3", { opacity: 0, duration: 0.25, ease: "power2.in" }, 17.8);
+      // Scene 5: outro (slam beat-locked to 18.56s strong cue)
+      tl.fromTo("#out-lock", { opacity: 0, scale: 1.15 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 18.6);
+      tl.fromTo("#out-sub", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 19.1);
+      tl.fromTo("#out-url", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 19.4);
+      tl.fromTo("#fade", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, 20.6);
+      // Music fade-out over the last 1.5s
+      tl.to(music, { volume: 0, duration: 1.5, ease: "power1.in" }, 19.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

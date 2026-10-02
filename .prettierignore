@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+src-tauri
+package-lock.json
+docs
+*.md
+brag-output
+videos

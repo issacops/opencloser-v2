@@ -59,7 +59,10 @@ describe("emotion-engine", () => {
 
     it("detects hostile signals and drops assertiveness drastically", () => {
       const transcript = [
-        { role: "user", text: "Stop calling me, I'm not interested. Take me off your list right now." },
+        {
+          role: "user",
+          text: "Stop calling me, I'm not interested. Take me off your list right now.",
+        },
       ];
       const result = analyzeEmotions(transcript, { ...baseAxes, assertiveness: 70 });
       expect(result.dominantMood).toBe("Hostile");

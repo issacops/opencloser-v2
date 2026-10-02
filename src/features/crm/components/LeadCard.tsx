@@ -26,20 +26,20 @@ export function LeadCard({ lead, onDragStart, onDial, onViewDetails }: LeadCardP
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
-           <div className="w-9 h-9 rounded-full bg-surface-bg flex items-center justify-center shrink-0">
-              <User className="w-5 h-5 text-ink-muted" />
-           </div>
-           <div className="min-w-0">
-              <h3 className="font-bold text-[14px] text-ink truncate tracking-tight">
-                {lead.name}
-              </h3>
-              <div className="flex items-center gap-1.5 text-[11px] text-ink-secondary mt-0.5 font-bold uppercase tracking-wider">
-                <Building2 className="w-3 h-3 shrink-0" />
-                <span className="truncate">{lead.company}</span>
-              </div>
-           </div>
+          <div className="w-9 h-9 rounded-full bg-surface-bg flex items-center justify-center shrink-0">
+            <User className="w-5 h-5 text-ink-muted" />
+          </div>
+          <div className="min-w-0">
+            <h3 className="font-bold text-[14px] text-ink truncate tracking-tight">{lead.name}</h3>
+            <div className="flex items-center gap-1.5 text-[11px] text-ink-secondary mt-0.5 font-bold uppercase tracking-wider">
+              <Building2 className="w-3 h-3 shrink-0" />
+              <span className="truncate">{lead.company}</span>
+            </div>
+          </div>
         </div>
-        <div className={`badge ${getScoreStyles(lead.score)} font-mono text-[11px] font-bold border border-current opacity-90`}>
+        <div
+          className={`badge ${getScoreStyles(lead.score)} font-mono text-[11px] font-bold border border-current opacity-90`}
+        >
           {lead.score}
         </div>
       </div>
@@ -55,7 +55,10 @@ export function LeadCard({ lead, onDragStart, onDial, onViewDetails }: LeadCardP
           <span className="font-bold uppercase tracking-wider">AI Execution Active</span>
           <div className="ml-auto flex gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-coral animate-bounce"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-coral animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+            <div
+              className="w-1.5 h-1.5 rounded-full bg-coral animate-bounce"
+              style={{ animationDelay: "0.2s" }}
+            ></div>
           </div>
         </div>
       )}
