@@ -22,7 +22,7 @@ Create a short launch-style brag video for OpenCloser — a blockbuster trailer 
   - "THE OPEN SOURCE AI SDR"
   - "5 AI AGENTS" / "100% LOCAL" / "$0 FOREVER"
   - "Download free."
-  - "github.com/issacops/opencloser"
+  - "github.com/issacops/opencloser-v2"
 
 ## Creative Direction
 - Tone preset: cinematic
@@ -52,7 +52,7 @@ Scene summary:
 2. Reveal: the wordmark — 4s — "OpenCloser" assembles full-screen, tagline rail, dashboard blooming behind
 3. Flow: pick a lead, start the call — 8s — simulated cursor: pipeline → lead card click → lead detail → INITIATE click → War Room live call with animating sentiment + coaching
 4. Stats: the volley — 3s — three cards cascade on the beat grid, then hold
-5. Outro: the lockup — 3s — "OpenCloser. / Download free. / github.com/issacops/opencloser", cut to black
+5. Outro: the lockup — 3s — "OpenCloser. / Download free. / github.com/issacops/opencloser-v2", cut to black
 
 ## Audio
 - Audio role: cinematic support — steady bed under trailer-scale reveals, swelling into the War Room moment and the outro

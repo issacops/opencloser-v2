@@ -2,21 +2,21 @@
 
 <div align="center">
 
-[![OpenCloser](https://img.shields.io/badge/OpenCloser-Open%20Source%20AI%20SDR-6366f1?style=for-the-badge&logo=robot&logoColor=white)](https://github.com/issacops/opencloser)
+[![OpenCloser](https://img.shields.io/badge/OpenCloser-Open%20Source%20AI%20SDR-6366f1?style=for-the-badge&logo=robot&logoColor=white)](https://github.com/issacops/opencloser-v2)
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC131?style=for-the-badge&logo=tauri&logoColor=white)](https://tauri.app)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Rust](https://img.shields.io/badge/Rust-Backend-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](LICENSE)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/issacops/opencloser/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/issacops/opencloser/actions)
-[![Release](https://img.shields.io/github/v/release/issacops/opencloser?include_prereleases&style=flat-square)](https://github.com/issacops/opencloser/releases)
-[![Stars](https://img.shields.io/github/stars/issacops/opencloser?style=flat-square)](https://github.com/issacops/opencloser/stargazers)
-[![Downloads](https://img.shields.io/github/downloads/issacops/opencloser/total?style=flat-square)](https://github.com/issacops/opencloser/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/issacops/opencloser-v2/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/issacops/opencloser-v2/actions)
+[![Release](https://img.shields.io/github/v/release/issacops/opencloser-v2?include_prereleases&style=flat-square)](https://github.com/issacops/opencloser-v2/releases)
+[![Stars](https://img.shields.io/github/stars/issacops/opencloser-v2?style=flat-square)](https://github.com/issacops/opencloser-v2/stargazers)
+[![Downloads](https://img.shields.io/github/downloads/issacops/opencloser-v2/total?style=flat-square)](https://github.com/issacops/opencloser-v2/releases)
 
 > **The open source AI sales development platform.** AI cold calling software, lead generation, sales automation, and a full AI SDR team — all running locally on your desktop. No SaaS fees. No cloud dependency. No data ever leaves your machine.
 
-[🎬 Watch the Launch Video](https://issacops.github.io/opencloser/opencloser-launch.mp4) · [🚀 Quick Start](#-quick-start) · [📸 Screenshots](#-screenshots) · [✨ Features](#-your-ai-sales-team) · [🏗️ Architecture](#%EF%B8%8F-architecture) · [📦 Download](https://github.com/issacops/opencloser/releases) · [🤝 Contributing](#-contributing)
+[🎬 Watch the Launch Video](https://issacops.github.io/opencloser-v2/opencloser-launch.mp4) · [🚀 Quick Start](#-quick-start) · [📸 Screenshots](#-screenshots) · [✨ Features](#-your-ai-sales-team) · [🏗️ Architecture](#%EF%B8%8F-architecture) · [📦 Download](https://github.com/issacops/opencloser-v2/releases) · [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -104,7 +104,7 @@ Post-call AI debrief with sentiment analysis and key insights. Auto-generated fo
 ### Run the Desktop App
 
 ```bash
-git clone https://github.com/issacops/opencloser.git
+git clone https://github.com/issacops/opencloser-v2.git
 cd opencloser
 npm install
 npm run tauri dev
@@ -180,7 +180,7 @@ opencloser/
 | **Windows** | x86_64 | `.msi` / `.exe` |
 | **Linux** | x86_64 | `.deb` / `.AppImage` / `.rpm` |
 
-All packages available on the [Releases page](https://github.com/issacops/opencloser/releases).
+All packages available on the [Releases page](https://github.com/issacops/opencloser-v2/releases).
 
 ---
 
@@ -270,7 +270,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 **Built with ❤️ for sales teams who want an unfair advantage.**
 
-[⭐ Star This Repo](https://github.com/issacops/opencloser/stargazers) · [🐛 Report Bug](https://github.com/issacops/opencloser/issues) · [💡 Request Feature](https://github.com/issacops/opencloser/issues) · [📖 Developer Guide](AGENTS.md) · [📦 Releases](https://github.com/issacops/opencloser/releases)
+[⭐ Star This Repo](https://github.com/issacops/opencloser-v2/stargazers) · [🐛 Report Bug](https://github.com/issacops/opencloser-v2/issues) · [💡 Request Feature](https://github.com/issacops/opencloser-v2/issues) · [📖 Developer Guide](AGENTS.md) · [📦 Releases](https://github.com/issacops/opencloser-v2/releases)
 
 ---
 

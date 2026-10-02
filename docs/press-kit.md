@@ -4,8 +4,8 @@
 
 OpenCloser is an **open-source AI sales development platform** that runs entirely on your desktop. It provides a complete AI sales team — strategist, lead researcher, voice caller (SDR), coach, and manager — all running locally with no SaaS fees and no cloud dependency.
 
-**Repository:** https://github.com/issacops/opencloser
-**Website:** https://issacops.github.io/opencloser/
+**Repository:** https://github.com/issacops/opencloser-v2
+**Website:** https://issacops.github.io/opencloser-v2/
 **License:** MIT
 
 ---
@@ -114,7 +114,7 @@ macOS (Apple Silicon + Intel), Windows (x86_64), Linux (x86_64).
 
 **How do I get started?**
 ```bash
-git clone https://github.com/issacops/opencloser.git
+git clone https://github.com/issacops/opencloser-v2.git
 cd opencloser
 npm install
 npm run tauri dev
@@ -133,6 +133,6 @@ npm run tauri dev
 
 ## Contact
 
-- **GitHub:** https://github.com/issacops/opencloser
-- **Issues:** https://github.com/issacops/opencloser/issues
-- **Releases:** https://github.com/issacops/opencloser/releases
+- **GitHub:** https://github.com/issacops/opencloser-v2
+- **Issues:** https://github.com/issacops/opencloser-v2/issues
+- **Releases:** https://github.com/issacops/opencloser-v2/releases

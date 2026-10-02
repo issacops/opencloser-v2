@@ -15,7 +15,7 @@ Black screen. Two lines slam in, one after the other: "SDR software costs $1,000
 - The stat volley: three cards fire in — "5 AI AGENTS", "100% LOCAL", "$0 FOREVER".
 
 ## Outro / punchline
-"OpenCloser." Full-screen lockup. "Download free." + github.com/issacops/opencloser. Cut to black. No wink.
+"OpenCloser." Full-screen lockup. "Download free." + github.com/issacops/opencloser-v2. Cut to black. No wink.
 
 ## User flow worth showing
 Pipeline kanban → click lead card → lead detail → INITIATE → War Room live call with sentiment + coaching. (Entry → key action → result: pick a lead → start the AI call → watch it sell with live telemetry.)
@@ -89,7 +89,7 @@ Music: strong cues 15.84s / 17.47s under the cascade
 Transition mood: hard cut → Scene 5
 
 ### Scene 5 — Outro: the lockup — 3s
-"OpenCloser." full-screen. "Download free." beneath. github.com/issacops/opencloser. Hold. Cut to black.
+"OpenCloser." full-screen. "Download free." beneath. github.com/issacops/opencloser-v2. Hold. Cut to black.
 Sequential/interaction: none — one lockup, stillness is the payload
 Audio intent: landing — final bell, then silence
 Audio-coupled idea: deep bell on the lockup; let it ring over the fade

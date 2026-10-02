@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://issacops.github.io/opencloser/sitemap.xml
+Sitemap: https://issacops.github.io/opencloser-v2/sitemap.xml
